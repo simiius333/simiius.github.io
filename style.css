@@ -1,12 +1,12 @@
 /* ==========================================================================
    Dark Aesthetic / Cyberpunk / VisionOS Bio Style
-   Inspired by Gamsh1kk / Dark Video Bio aesthetic
+   Mobile Responsive & High-end Dark Glass Aesthetics
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --dark-glass-bg: rgba(15, 17, 21, 0.72);
+  --dark-glass-bg: rgba(15, 17, 21, 0.74);
   --dark-glass-border: rgba(255, 255, 255, 0.12);
   --dark-glass-inner: inset 0 1px 1px rgba(255, 255, 255, 0.15), inset 0 -1px 1px rgba(0, 0, 0, 0.5);
   --dark-glass-blur: blur(28px) saturate(180%);
@@ -18,15 +18,16 @@
   padding: 0;
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
   width: 100%;
-  height: 100%;
-  overflow-x: hidden;
+  min-height: 100%;
   background-color: #050608;
   color: #f3f4f6;
   font-family: 'Inter', -apple-system, sans-serif;
+  overflow-x: hidden;
 }
 
 /* Click to enter overlay */
@@ -39,7 +40,7 @@ html, body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.7s;
 }
 
 #enter-overlay.hidden-overlay {
@@ -50,16 +51,22 @@ html, body {
 
 .enter-text {
   font-family: 'Silkscreen', monospace;
-  font-size: 15px;
+  font-size: 14px;
   color: #ffffff;
   letter-spacing: 0.05em;
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
   animation: pulseEnter 2s infinite ease-in-out;
 }
 
+@media (min-width: 640px) {
+  .enter-text {
+    font-size: 16px;
+  }
+}
+
 @keyframes pulseEnter {
   0%, 100% { opacity: 0.85; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.98); }
+  50% { opacity: 0.35; transform: scale(0.98); }
 }
 
 /* Background Video Layers */
@@ -105,17 +112,28 @@ html, body {
   z-index: 40;
 }
 
+@media (max-width: 640px) {
+  .viewport-frame {
+    inset: 6px;
+    border-radius: 20px;
+    box-shadow: 
+      inset 0 0 50px rgba(0, 0, 0, 0.8), 
+      inset 0 0 100px rgba(0, 0, 0, 0.5),
+      0 0 0 6px #050608;
+  }
+}
+
 /* Ambient Dark Overlay on Video */
 .video-dark-overlay {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at center, rgba(5, 7, 10, 0.4) 0%, rgba(5, 7, 10, 0.75) 100%),
-              linear-gradient(to bottom, rgba(5, 7, 10, 0.3) 0%, rgba(5, 7, 10, 0.6) 100%);
+  background: radial-gradient(circle at center, rgba(5, 7, 10, 0.45) 0%, rgba(5, 7, 10, 0.82) 100%),
+              linear-gradient(to bottom, rgba(5, 7, 10, 0.35) 0%, rgba(5, 7, 10, 0.65) 100%);
   z-index: 1;
   pointer-events: none;
 }
 
-/* Pixel Headings */
+/* Fonts */
 .pixel-font {
   font-family: 'Silkscreen', monospace;
 }
@@ -126,7 +144,7 @@ html, body {
 
 .pixel-title {
   font-family: 'Silkscreen', monospace;
-  font-size: 34px;
+  font-size: 32px;
   letter-spacing: 0.06em;
   color: #ffffff;
   text-shadow: 
@@ -144,16 +162,24 @@ html, body {
 /* Typewriter selection highlight effect */
 .typewriter-text {
   font-family: 'Silkscreen', monospace;
-  font-size: 13px;
-  letter-spacing: 0.12em;
+  font-size: 11px;
+  letter-spacing: 0.1em;
   color: #d1d5db;
   display: inline-block;
-  min-height: 20px;
+  min-height: 18px;
   position: relative;
 }
 
+@media (min-width: 640px) {
+  .typewriter-text {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    min-height: 20px;
+  }
+}
+
 .typewriter-text.selecting {
-  background-color: rgba(37, 99, 235, 0.85);
+  background-color: rgba(37, 99, 235, 0.9);
   color: #ffffff;
   border-radius: 2px;
   box-shadow: 0 0 8px rgba(37, 99, 235, 0.6);
@@ -161,8 +187,8 @@ html, body {
 
 .typewriter-cursor {
   display: inline-block;
-  width: 7px;
-  height: 14px;
+  width: 6px;
+  height: 13px;
   background-color: #ffffff;
   vertical-align: middle;
   margin-left: 2px;
@@ -250,6 +276,31 @@ input[type=range]::-webkit-slider-thumb:hover {
   transform: scale(1.25);
 }
 
+/* Custom Volume Slider */
+.volume-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 3px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -3.5px;
+  transition: transform 0.1s ease;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.3);
+}
+
 /* Equalizer Bars */
 .audio-bar {
   width: 2.5px;
@@ -275,8 +326,8 @@ input[type=range]::-webkit-slider-thumb:hover {
 
 /* Social Dock Icons */
 .social-dock-btn {
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.14);
@@ -288,16 +339,23 @@ input[type=range]::-webkit-slider-thumb:hover {
   transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+@media (min-width: 640px) {
+  .social-dock-btn {
+    width: 42px;
+    height: 42px;
+  }
+}
+
 .social-dock-btn:hover {
   background: rgba(255, 255, 255, 0.22);
   border-color: rgba(255, 255, 255, 0.4);
-  transform: translateY(-4px) scale(1.1);
+  transform: translateY(-3px) scale(1.08);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 0 12px rgba(255, 255, 255, 0.3);
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
@@ -305,7 +363,4 @@ input[type=range]::-webkit-slider-thumb:hover {
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
 }

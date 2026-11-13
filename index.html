@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>SIMIIUS</title>
   <meta name="description" content="SIMIIUS — Official Dark Portal with Custom Audio Player, Background Videos & Live Spotify Integration.">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>">
@@ -30,8 +30,8 @@
 
   <!-- 2. Dual Background Video Looper -->
   <div class="video-bg-container">
-    <video id="bg-video-1" class="bg-video active-video" src="assets/bg1.mp4" muted playsinline></video>
-    <video id="bg-video-2" class="bg-video" src="assets/bg2.mp4" muted playsinline></video>
+    <video id="bg-video-1" class="bg-video active-video" src="assets/bg1.mp4" muted playsinline webkit-playsinline preload="auto"></video>
+    <video id="bg-video-2" class="bg-video" src="assets/bg2.mp4" muted playsinline webkit-playsinline preload="auto"></video>
   </div>
 
   <!-- 3. Ambient Dark Overlay & Viewport Vignette Frame -->
@@ -39,8 +39,8 @@
   <div class="viewport-frame"></div>
 
   <!-- 4. Top Controls Bar -->
-  <header class="fixed top-6 left-7 z-50">
-    <button id="top-volume-btn" class="w-9 h-9 rounded-full bg-black/40 hover:bg-black/70 border border-white/10 hover:border-white/30 text-white/80 hover:text-white flex items-center justify-center transition backdrop-blur-md shadow-lg" title="Mute/Unmute Audio">
+  <header class="fixed top-4 sm:top-6 left-5 sm:left-7 z-50">
+    <button id="top-volume-btn" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/50 hover:bg-black/80 border border-white/10 hover:border-white/30 text-white/80 hover:text-white flex items-center justify-center transition backdrop-blur-md shadow-lg" title="Mute/Unmute Audio">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
       </svg>
@@ -48,33 +48,33 @@
   </header>
 
   <!-- 5. Main Content Wrapper -->
-  <main class="relative z-20 min-h-screen flex flex-col items-center justify-center px-4 py-12 max-w-md sm:max-w-lg mx-auto text-center">
+  <main class="relative z-20 min-h-[100dvh] flex flex-col items-center justify-center px-3.5 sm:px-6 py-10 sm:py-14 max-w-md sm:max-w-lg mx-auto text-center">
 
     <!-- Top Pixel Hero -->
-    <div class="mb-4">
+    <div class="mb-3.5 sm:mb-4">
       <h1 class="pixel-title select-none">SIMIIUS</h1>
       
       <!-- Typewriter Text with Selection Highlight Effect -->
-      <div class="flex items-center justify-center my-1.5 min-h-[24px]">
+      <div class="flex items-center justify-center my-1.5 min-h-[22px] sm:min-h-[24px]">
         <span id="typewriter-text" class="typewriter-text"></span>
         <span class="typewriter-cursor"></span>
       </div>
 
       <!-- Telegram Location Badge -->
       <a href="https://t.me/simiius" target="_blank" rel="noopener noreferrer" 
-         class="inline-flex items-center space-x-1.5 text-[11px] font-bold tracking-widest uppercase text-slate-300 hover:text-white transition px-3.5 py-1 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/30 shadow-sm mt-1">
+         class="inline-flex items-center space-x-1.5 text-[10px] sm:text-[11px] font-bold tracking-widest uppercase text-slate-300 hover:text-white transition px-3 sm:px-3.5 py-0.5 sm:py-1 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/30 shadow-sm mt-0.5">
         <span>📍 TELEGRAM</span>
       </a>
     </div>
 
     <!-- Center Cards Container -->
-    <div class="w-full space-y-3 mb-6">
+    <div class="w-full space-y-2.5 sm:space-y-3 mb-5 sm:mb-6">
 
       <!-- Profile Capsule Card -->
-      <div class="dark-glass p-3.5 sm:p-4 flex items-center justify-between">
-        <div class="flex items-center space-x-3.5">
+      <div class="dark-glass p-3 sm:p-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3 sm:space-x-3.5 min-w-0">
           <!-- Avatar with Discord Status -->
-          <div class="relative w-12 h-12 rounded-full overflow-hidden border border-white/20 shrink-0">
+          <div class="relative w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden border border-white/20 shrink-0">
             <img id="user-avatar" 
                  src="https://cdn.discordapp.com/avatars/856833249770209320/08aaa959ed263406b068ae9326b1c2cd.png?size=256" 
                  alt="SIMIIUS" 
@@ -83,28 +83,28 @@
           </div>
 
           <!-- Handle & Badges -->
-          <div class="text-left">
+          <div class="text-left truncate">
             <div class="flex items-center space-x-1.5">
               <span class="font-bold text-white text-sm sm:text-base pixel-font">simiius</span>
               <span class="text-emerald-400 text-xs" title="Verified">✔</span>
-              <span class="text-[10px] font-mono uppercase bg-emerald-500/15 text-emerald-400 px-1.5 py-0.2 rounded border border-emerald-500/30">CODE ⟨⟩</span>
+              <span class="text-[9px] sm:text-[10px] font-mono uppercase bg-emerald-500/15 text-emerald-400 px-1.5 py-0.2 rounded border border-emerald-500/30">CODE ⟨⟩</span>
             </div>
-            <p id="user-status-text" class="text-xs text-slate-400 font-mono mt-0.5">Online in Discord</p>
+            <p id="user-status-text" class="text-xs text-slate-400 font-mono mt-0.5 truncate">Online in Discord</p>
           </div>
         </div>
 
-        <a href="https://t.me/simiius" target="_blank" class="icon-btn p-2 rounded-xl text-slate-300 hover:text-white">
+        <a href="https://t.me/simiius" target="_blank" class="icon-btn p-2 rounded-xl text-slate-300 hover:text-white shrink-0 ml-2">
           <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
         </a>
       </div>
 
       <!-- Expandable BIO Capsule -->
       <div class="dark-glass overflow-hidden text-left transition-all duration-300">
-        <button id="bio-toggle-btn" class="w-full px-4 py-2.5 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-300 hover:text-white transition">
+        <button id="bio-toggle-btn" class="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-300 hover:text-white transition">
           <span class="pixel-font">BIO</span>
           <i id="bio-chevron" data-lucide="chevron-down" class="w-4 h-4 transition duration-300"></i>
         </button>
-        <div id="bio-content" class="hidden px-4 pb-3.5 pt-1 text-xs text-slate-300 space-y-1.5 border-t border-white/5 font-mono">
+        <div id="bio-content" class="hidden px-3.5 sm:px-4 pb-3.5 pt-1 text-xs text-slate-300 space-y-1.5 border-t border-white/5 font-mono">
           <p>✦ <strong class="text-white">Discord:</strong> simiius (ID: 856833249770209320)</p>
           <p>✦ <strong class="text-white">Telegram:</strong> <a href="https://t.me/simiius" target="_blank" class="text-sky-400 hover:underline">@simiius</a></p>
           <p>✦ <strong class="text-white">Steam:</strong> <a href="https://steamcommunity.com/id/simiius" target="_blank" class="text-slate-200 hover:underline">simiius</a></p>
@@ -112,12 +112,12 @@
         </div>
       </div>
 
-      <!-- CUSTOM BUILT-IN MUSIC PLAYER (Tek It / Royalty) -->
-      <div class="dark-glass p-3.5 sm:p-4 text-left">
-        <div class="flex items-center space-x-3.5">
+      <!-- CUSTOM BUILT-IN MUSIC PLAYER WITH VOLUME SLIDER -->
+      <div class="dark-glass p-3 sm:p-4 text-left">
+        <div class="flex items-center space-x-3 sm:space-x-3.5">
           
           <!-- Album Thumbnail with Waveform -->
-          <div class="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-white/15 bg-black/50">
+          <div class="relative w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden shrink-0 border border-white/15 bg-black/50">
             <img id="player-cover" src="assets/cover1.jpg" alt="Track Cover" class="w-full h-full object-cover">
             <div id="player-audio-bars" class="absolute inset-0 bg-black/40 flex items-center justify-center space-x-0.5">
               <span class="audio-bar"></span>
@@ -127,59 +127,80 @@
             </div>
           </div>
 
-          <!-- Title, Artist & Scrubber -->
+          <!-- Title, Artist & Control Buttons -->
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between mb-1">
               <div class="truncate pr-2">
                 <h4 id="player-title" class="text-xs sm:text-sm font-bold text-white truncate">Tek It (I Watch the Moon)</h4>
-                <p id="player-artist" class="text-[11px] text-slate-400 truncate">Cafuné</p>
+                <p id="player-artist" class="text-[10px] sm:text-[11px] text-slate-400 truncate">Cafuné</p>
               </div>
-              <div class="flex items-center space-x-1 shrink-0">
-                <button id="player-prev-btn" class="p-1 text-slate-400 hover:text-white transition" title="Previous">
+              <div class="flex items-center space-x-0.5 sm:space-x-1 shrink-0">
+                <button id="player-prev-btn" class="p-1 text-slate-400 hover:text-white transition" title="Previous Track">
                   <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
                 </button>
-                <button id="player-play-btn" class="w-7 h-7 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition" title="Play/Pause">
-                  <svg class="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                <button id="player-play-btn" class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition" title="Play/Pause">
+                  <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                 </button>
-                <button id="player-next-btn" class="p-1 text-slate-400 hover:text-white transition" title="Next">
+                <button id="player-next-btn" class="p-1 text-slate-400 hover:text-white transition" title="Next Track">
                   <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
                 </button>
               </div>
             </div>
 
             <!-- Scrubber & Time -->
-            <div class="flex items-center space-x-2">
-              <span id="player-time-current" class="text-[10px] font-mono text-slate-400 w-7">0:00</span>
+            <div class="flex items-center space-x-1.5 sm:space-x-2">
+              <span id="player-time-current" class="text-[9px] sm:text-[10px] font-mono text-slate-400 w-6 sm:w-7">0:00</span>
               <div class="flex-1 flex items-center">
                 <input id="player-progress" type="range" min="0" max="100" value="0" step="0.1">
               </div>
-              <span id="player-time-total" class="text-[10px] font-mono text-slate-400 w-7 text-right">0:00</span>
+              <span id="player-time-total" class="text-[9px] sm:text-[10px] font-mono text-slate-400 w-6 sm:w-7 text-right">0:00</span>
             </div>
           </div>
 
         </div>
+
+        <!-- Volume Slider & Playlist Track Index Row -->
+        <div class="flex items-center justify-between pt-2 mt-2 border-t border-white/5 text-[10px] text-slate-400 font-mono">
+          <div class="flex items-center space-x-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span id="player-track-index">1 / 2</span>
+          </div>
+
+          <!-- Volume Controls -->
+          <div class="flex items-center space-x-2">
+            <button id="player-volume-icon-btn" class="text-slate-400 hover:text-white transition p-0.5" title="Mute/Unmute">
+              <svg id="player-volume-svg" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+              </svg>
+            </button>
+            <div class="w-16 sm:w-20 flex items-center">
+              <input id="player-volume-slider" type="range" min="0" max="100" value="80" class="volume-slider">
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- LIVE SPOTIFY CARD (Lanyard Real-Time Stream) -->
-      <div id="spotify-card" class="dark-glass p-3.5 sm:p-4 text-left">
+      <div id="spotify-card" class="dark-glass p-3 sm:p-4 text-left">
         
         <!-- ACTIVE SPOTIFY STATE -->
-        <div id="spotify-playing-view" class="space-y-3">
+        <div id="spotify-playing-view" class="space-y-2.5 sm:space-y-3">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-2">
               <svg class="w-4 h-4 text-[#1DB954]" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.494 17.303c-.215.352-.676.464-1.028.249-2.818-1.722-6.365-2.111-10.542-1.157-.402.092-.803-.16-.895-.562-.092-.403.159-.804.562-.896 4.571-1.045 8.492-.596 11.654 1.338.353.215.464.676.249 1.028zm1.468-3.264c-.27.44-.848.579-1.287.31-3.226-1.983-8.144-2.557-11.958-1.399-.494.15-1.022-.134-1.172-.628-.15-.493.134-1.022.628-1.171 4.357-1.323 9.774-.683 13.479 1.599.44.27.579.849.31 1.289zm.126-3.414C15.228 8.32 8.85 8.11 5.158 9.23c-.604.184-1.242-.162-1.425-.765-.183-.604.162-1.242.765-1.425 4.246-1.289 11.294-1.045 15.733 1.59.544.323.722 1.028.4 1.572-.323.543-1.029.722-1.571.4z"/>
               </svg>
-              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-300">Spotify Live Presence</span>
+              <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-300">Spotify Live Presence</span>
             </div>
             <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Listening</span>
           </div>
 
           <div class="flex items-center space-x-3">
-            <img id="spotify-album-art" src="" alt="Album Art" class="w-11 h-11 rounded-lg object-cover border border-white/10 shrink-0">
+            <img id="spotify-album-art" src="" alt="Album Art" class="w-10 h-10 sm:w-11 sm:h-11 rounded-lg object-cover border border-white/10 shrink-0">
             <div class="min-w-0 flex-1">
               <h5 id="spotify-track-title" class="text-xs sm:text-sm font-bold text-white truncate">Track Name</h5>
-              <p id="spotify-track-artist" class="text-[11px] text-slate-400 truncate">Artist</p>
+              <p id="spotify-track-artist" class="text-[10px] sm:text-[11px] text-slate-400 truncate">Artist</p>
             </div>
             <a id="spotify-listen-along-btn" href="#" target="_blank" class="icon-btn px-2.5 py-1 text-[11px] font-bold text-emerald-400 flex items-center space-x-1 shrink-0">
               <i data-lucide="headphones" class="w-3.5 h-3.5"></i>
@@ -192,7 +213,7 @@
             <div class="relative w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
               <div id="spotify-progress-bar" class="absolute left-0 top-0 h-full bg-[#1DB954] rounded-full transition-all duration-150" style="width: 0%;"></div>
             </div>
-            <div class="flex justify-between text-[10px] font-mono text-slate-400">
+            <div class="flex justify-between text-[9px] sm:text-[10px] font-mono text-slate-400">
               <span id="spotify-time-current">0:00</span>
               <span id="spotify-time-total">0:00</span>
             </div>
@@ -215,39 +236,39 @@
     </div>
 
     <!-- 6. Bottom Social Icons Dock -->
-    <div class="flex items-center justify-center space-x-3 mb-4">
+    <div class="flex items-center justify-center space-x-2.5 sm:space-x-3 mb-3.5 sm:mb-4">
       
       <!-- Telegram -->
       <a href="https://t.me/simiius" target="_blank" rel="noopener noreferrer" class="social-dock-btn" title="Telegram">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+        <svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
         </svg>
       </a>
 
       <!-- Discord -->
       <a href="https://discord.com/users/856833249770209320" target="_blank" rel="noopener noreferrer" class="social-dock-btn" title="Discord">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+        <svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor">
           <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
         </svg>
       </a>
 
       <!-- Spotify -->
       <a href="https://open.spotify.com/user/31jiqs7ntdo2d63m67nmknh5ul6q" target="_blank" rel="noopener noreferrer" class="social-dock-btn" title="Spotify">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+        <svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.494 17.303c-.215.352-.676.464-1.028.249-2.818-1.722-6.365-2.111-10.542-1.157-.402.092-.803-.16-.895-.562-.092-.403.159-.804.562-.896 4.571-1.045 8.492-.596 11.654 1.338.353.215.464.676.249 1.028zm1.468-3.264c-.27.44-.848.579-1.287.31-3.226-1.983-8.144-2.557-11.958-1.399-.494.15-1.022-.134-1.172-.628-.15-.493.134-1.022.628-1.171 4.357-1.323 9.774-.683 13.479 1.599.44.27.579.849.31 1.289zm.126-3.414C15.228 8.32 8.85 8.11 5.158 9.23c-.604.184-1.242-.162-1.425-.765-.183-.604.162-1.242.765-1.425 4.246-1.289 11.294-1.045 15.733 1.59.544.323.722 1.028.4 1.572-.323.543-1.029.722-1.571.4z"/>
         </svg>
       </a>
 
       <!-- Steam -->
       <a href="https://steamcommunity.com/id/simiius" target="_blank" rel="noopener noreferrer" class="social-dock-btn" title="Steam">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+        <svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor">
           <path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.029 4.524 4.524s-2.03 4.524-4.524 4.524h-.105l-4.076 2.911c0 .052.005.105.005.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 12-5.373 12-12s-5.373-12-12-12zM7.557 14.867l-.442-.183c.365.485.586 1.085.586 1.74 0 .373-.075.726-.207 1.05l.395.163c.531-.418.878-1.066.878-1.799 0-.342-.075-.664-.21-.971zm8.39-8.497c-1.396 0-2.533 1.137-2.533 2.533s1.137 2.534 2.533 2.534c1.397 0 2.534-1.138 2.534-2.534 0-1.396-1.137-2.533-2.534-2.533zm0 .844c.933 0 1.689.756 1.689 1.689 0 .933-.756 1.69-1.689 1.69-.932 0-1.688-.757-1.688-1.69 0-.933.756-1.689 1.688-1.689zM5.337 16.424c0 .932.756 1.689 1.688 1.689.176 0 .343-.031.503-.082l-2.109-.872c-.053-.23-.082-.473-.082-.735z"/>
         </svg>
       </a>
 
       <!-- Lolzteam / Zelenka -->
       <a href="https://zelenka.guru/members/8190065/" target="_blank" rel="noopener noreferrer" class="social-dock-btn" title="Lolzteam (Zelenka)">
-        <svg class="w-6 h-3.5" viewBox="0 0 90 40" fill="currentColor">
+        <svg class="w-5 h-3 sm:w-6 sm:h-3.5" viewBox="0 0 90 40" fill="currentColor">
           <path fill-rule="evenodd" clip-rule="evenodd" d="M49,31V13h15.1l4-4H16v4h17L21,32h-8V9H9v27h59l-4-4H49V31 M26,32h19v-1V13h-7L26,32z"/>
         </svg>
       </a>
@@ -255,7 +276,7 @@
     </div>
 
     <!-- 7. Views Badge -->
-    <div class="flex items-center space-x-1.5 text-xs text-slate-400 font-mono tracking-wider">
+    <div class="flex items-center space-x-1.5 text-[11px] sm:text-xs text-slate-400 font-mono tracking-wider">
       <i data-lucide="eye" class="w-3.5 h-3.5"></i>
       <span id="views-counter">529</span>
     </div>

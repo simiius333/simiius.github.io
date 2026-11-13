@@ -1,4 +1,4 @@
-// Audio Player, Video Loop & Typewriter Controller
+// Audio Player, Video Loop, Volume & Typewriter Controller
 (function () {
   // 1. Playlists Configuration
   const playlist = [
@@ -21,6 +21,8 @@
   audio.preload = "auto";
   let isPlaying = false;
   let isMuted = false;
+  let currentVolume = 0.8;
+  audio.volume = currentVolume;
 
   // DOM Elements
   const enterOverlay = document.getElementById('enter-overlay');
@@ -38,6 +40,12 @@
   const timeTotal = document.getElementById('player-time-total');
   const audioBars = document.getElementById('player-audio-bars');
   const volumeToggleBtn = document.getElementById('top-volume-btn');
+  const trackIndexEl = document.getElementById('player-track-index');
+
+  // Player Volume Controls
+  const playerVolSlider = document.getElementById('player-volume-slider');
+  const playerVolBtn = document.getElementById('player-volume-icon-btn');
+  const playerVolSvg = document.getElementById('player-volume-svg');
 
   // Format MM:SS
   function formatTime(sec) {
@@ -57,6 +65,7 @@
     if (playerCover) playerCover.src = track.cover;
     if (progressBar) progressBar.value = 0;
     if (timeCurrent) timeCurrent.textContent = "0:00";
+    if (trackIndexEl) trackIndexEl.textContent = `${currentTrackIdx + 1} / ${playlist.length}`;
   }
 
   function playTrack() {
@@ -64,7 +73,7 @@
       isPlaying = true;
       updatePlayBtnState();
       if (audioBars) audioBars.classList.remove('audio-bar-paused');
-    }).catch(e => console.log('Autoplay prevented:', e));
+    }).catch(e => console.log('Autoplay handled:', e));
   }
 
   function pauseTrack() {
@@ -77,8 +86,28 @@
   function updatePlayBtnState() {
     if (!playPauseBtn) return;
     playPauseBtn.innerHTML = isPlaying
-      ? `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`
-      : `<svg class="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
+      ? `<svg class="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`
+      : `<svg class="w-4 h-4 sm:w-5 sm:h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
+  }
+
+  // Update Volume Icon & States
+  function updateVolumeUI(vol, muted) {
+    const effectiveVol = muted ? 0 : vol;
+    
+    // SVG Paths
+    const muteSvg = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/>`;
+    const lowVolSvg = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>`;
+    const highVolSvg = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>`;
+
+    const chosenSvg = effectiveVol === 0 ? muteSvg : (effectiveVol < 0.5 ? lowVolSvg : highVolSvg);
+
+    if (playerVolSvg) playerVolSvg.innerHTML = chosenSvg;
+    if (volumeToggleBtn) {
+      volumeToggleBtn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">${chosenSvg}</svg>`;
+    }
+    if (playerVolSlider && !muted) {
+      playerVolSlider.value = Math.round(vol * 100);
+    }
   }
 
   // Audio Events
@@ -94,7 +123,6 @@
   });
 
   audio.addEventListener('ended', () => {
-    // Auto next track
     loadTrack(currentTrackIdx + 1);
     playTrack();
   });
@@ -128,15 +156,35 @@
     });
   }
 
-  // Master Volume Toggle
-  if (volumeToggleBtn) {
-    volumeToggleBtn.addEventListener('click', () => {
-      isMuted = !isMuted;
+  // Volume Slider in Player
+  if (playerVolSlider) {
+    playerVolSlider.addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value) / 100;
+      currentVolume = val;
+      audio.volume = currentVolume;
+      isMuted = (currentVolume === 0);
       audio.muted = isMuted;
-      volumeToggleBtn.innerHTML = isMuted
-        ? `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>`
-        : `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>`;
+      updateVolumeUI(currentVolume, isMuted);
     });
+  }
+
+  // Volume Mute/Unmute Toggles
+  function toggleMute() {
+    isMuted = !isMuted;
+    audio.muted = isMuted;
+    if (!isMuted && audio.volume === 0) {
+      audio.volume = 0.5;
+      currentVolume = 0.5;
+    }
+    updateVolumeUI(currentVolume, isMuted);
+  }
+
+  if (playerVolBtn) {
+    playerVolBtn.addEventListener('click', toggleMute);
+  }
+
+  if (volumeToggleBtn) {
+    volumeToggleBtn.addEventListener('click', toggleMute);
   }
 
   // 2. Continuous Background Video Looper
@@ -148,7 +196,7 @@
       video2.play().then(() => {
         video2.classList.add('active-video');
         video1.classList.remove('active-video');
-      }).catch(e => console.log('Video 2 play err:', e));
+      }).catch(e => console.log('Video 2 err:', e));
     });
 
     video2.addEventListener('ended', () => {
@@ -156,22 +204,29 @@
       video1.play().then(() => {
         video1.classList.add('active-video');
         video2.classList.remove('active-video');
-      }).catch(e => console.log('Video 1 play err:', e));
+      }).catch(e => console.log('Video 1 err:', e));
     });
   }
 
-  // 3. Click to Enter
+  // 3. Click / Tap to Enter (Handles touch on iOS / Android)
+  function handleEnter() {
+    if (!enterOverlay) return;
+    enterOverlay.classList.add('hidden-overlay');
+    // Start Video
+    if (video1) {
+      video1.play().catch(e => console.log('Video play err:', e));
+      video1.classList.add('active-video');
+    }
+    // Start Music
+    loadTrack(0);
+    playTrack();
+  }
+
   if (enterOverlay) {
-    enterOverlay.addEventListener('click', () => {
-      enterOverlay.classList.add('hidden-overlay');
-      // Start Video
-      if (video1) {
-        video1.play().catch(e => console.log('Video play err:', e));
-        video1.classList.add('active-video');
-      }
-      // Start Music
-      loadTrack(0);
-      playTrack();
+    enterOverlay.addEventListener('click', handleEnter);
+    enterOverlay.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      handleEnter();
     });
   }
 
@@ -243,4 +298,5 @@
   initVideoLoop();
   typePhrase();
   loadTrack(0);
+  updateVolumeUI(currentVolume, false);
 })();
