@@ -344,14 +344,30 @@
     });
   }
 
-  // 6. View Counter
-  const viewsEl = document.getElementById('views-counter');
-  if (viewsEl) {
-    let views = parseInt(localStorage.getItem('simiius_views') || '529', 10);
-    views += 1;
-    localStorage.setItem('simiius_views', views.toString());
-    viewsEl.textContent = views;
+  // 6. Real Global View Counter
+  async function initLiveCounter() {
+    const viewsEl = document.getElementById('views-counter');
+    if (!viewsEl) return;
+
+    try {
+      const res = await fetch('https://api.visitorbadge.io/api/visitors?path=simiius.github.io.official.page');
+      const svgText = await res.text();
+      const matches = svgText.match(/<text[^>]*>([^<]+)<\/text>/g);
+      if (matches && matches.length >= 2) {
+        const count = matches[matches.length - 1].replace(/<[^>]+>/g, '').trim();
+        viewsEl.textContent = count;
+        localStorage.setItem('simiius_real_views', count);
+        return;
+      }
+    } catch (e) {
+      console.log('Live counter fetch error:', e);
+    }
+
+    // Fallback if offline
+    let cached = localStorage.getItem('simiius_real_views') || '1';
+    viewsEl.textContent = cached;
   }
+  initLiveCounter();
 
   // Initialization
   initVideoLoop();
