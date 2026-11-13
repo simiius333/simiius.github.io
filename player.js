@@ -1,4 +1,4 @@
-// Audio Player, Video Loop, Volume & Typewriter Controller
+// Audio Player, Video Loop, Asset Preloader & Typewriter Controller
 (function () {
   // 1. Playlists Configuration
   const playlist = [
@@ -25,7 +25,11 @@
   audio.volume = currentVolume;
 
   // DOM Elements
-  const enterOverlay = document.getElementById('enter-overlay');
+  const loaderOverlay = document.getElementById('loader-overlay');
+  const loaderBar = document.getElementById('loader-progress-bar');
+  const loaderPercent = document.getElementById('loader-percentage');
+  const loaderStatus = document.getElementById('loader-status-text');
+
   const video1 = document.getElementById('bg-video-1');
   const video2 = document.getElementById('bg-video-2');
 
@@ -73,7 +77,21 @@
       isPlaying = true;
       updatePlayBtnState();
       if (audioBars) audioBars.classList.remove('audio-bar-paused');
-    }).catch(e => console.log('Autoplay handled:', e));
+    }).catch(e => {
+      console.log('Autoplay policy caught, will play on next interaction:', e);
+      // Fallback listener for first user interaction
+      const playOnInteraction = () => {
+        audio.play().then(() => {
+          isPlaying = true;
+          updatePlayBtnState();
+          if (audioBars) audioBars.classList.remove('audio-bar-paused');
+        }).catch(err => console.log(err));
+        window.removeEventListener('click', playOnInteraction);
+        window.removeEventListener('touchstart', playOnInteraction);
+      };
+      window.addEventListener('click', playOnInteraction, { once: true });
+      window.addEventListener('touchstart', playOnInteraction, { once: true });
+    });
   }
 
   function pauseTrack() {
@@ -90,20 +108,20 @@
       : `<svg class="w-4 h-4 sm:w-5 sm:h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
   }
 
-  // Update Volume Icon & States
+  // Update Volume Icon & States with Pure Bloom
   function updateVolumeUI(vol, muted) {
     const effectiveVol = muted ? 0 : vol;
     
-    // SVG Paths
-    const muteSvg = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/>`;
-    const lowVolSvg = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>`;
-    const highVolSvg = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>`;
+    // Pure speaker SVG paths
+    const muteSvg = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/>`;
+    const lowVolSvg = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15.536 8.464a5 5 0 010 7.072M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>`;
+    const highVolSvg = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>`;
 
     const chosenSvg = effectiveVol === 0 ? muteSvg : (effectiveVol < 0.5 ? lowVolSvg : highVolSvg);
 
     if (playerVolSvg) playerVolSvg.innerHTML = chosenSvg;
     if (volumeToggleBtn) {
-      volumeToggleBtn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">${chosenSvg}</svg>`;
+      volumeToggleBtn.innerHTML = `<svg class="w-5 h-5 bloom-icon text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">${chosenSvg}</svg>`;
     }
     if (playerVolSlider && !muted) {
       playerVolSlider.value = Math.round(vol * 100);
@@ -179,13 +197,8 @@
     updateVolumeUI(currentVolume, isMuted);
   }
 
-  if (playerVolBtn) {
-    playerVolBtn.addEventListener('click', toggleMute);
-  }
-
-  if (volumeToggleBtn) {
-    volumeToggleBtn.addEventListener('click', toggleMute);
-  }
+  if (playerVolBtn) playerVolBtn.addEventListener('click', toggleMute);
+  if (volumeToggleBtn) volumeToggleBtn.addEventListener('click', toggleMute);
 
   // 2. Continuous Background Video Looper
   function initVideoLoop() {
@@ -208,26 +221,74 @@
     });
   }
 
-  // 3. Click / Tap to Enter (Handles touch on iOS / Android)
-  function handleEnter() {
-    if (!enterOverlay) return;
-    enterOverlay.classList.add('hidden-overlay');
-    // Start Video
+  // 3. Preloader Progress System
+  let progress = 0;
+  let assetsReady = false;
+
+  function updateLoader() {
+    if (loaderBar) loaderBar.style.width = `${progress}%`;
+    if (loaderPercent) loaderPercent.textContent = `${Math.floor(progress)}%`;
+
+    if (progress < 40) {
+      if (loaderStatus) loaderStatus.textContent = "Loading audio tracks...";
+    } else if (progress < 80) {
+      if (loaderStatus) loaderStatus.textContent = "Buffering video stream...";
+    } else if (progress < 100) {
+      if (loaderStatus) loaderStatus.textContent = "Finalizing experience...";
+    } else {
+      if (loaderStatus) loaderStatus.textContent = "Ready";
+      setTimeout(finishLoading, 400);
+      return;
+    }
+
+    // Step progress
+    const step = assetsReady ? 4 : (progress < 85 ? 1.5 : 0.4);
+    progress = Math.min(progress + step, 100);
+    requestAnimationFrame(updateLoader);
+  }
+
+  function finishLoading() {
+    if (!loaderOverlay) return;
+    loaderOverlay.classList.add('hidden-loader');
+    
+    // Start Background Video
     if (video1) {
-      video1.play().catch(e => console.log('Video play err:', e));
+      video1.play().catch(e => console.log('Video autoplay err:', e));
       video1.classList.add('active-video');
     }
-    // Start Music
-    loadTrack(0);
+
+    // Start Audio
     playTrack();
   }
 
-  if (enterOverlay) {
-    enterOverlay.addEventListener('click', handleEnter);
-    enterOverlay.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      handleEnter();
-    });
+  // Preload Assets Listener
+  function monitorAssets() {
+    let loadedCount = 0;
+    const totalAssets = 3;
+
+    function onItemLoaded() {
+      loadedCount++;
+      if (loadedCount >= totalAssets) {
+        assetsReady = true;
+      }
+    }
+
+    if (video1) {
+      if (video1.readyState >= 3) onItemLoaded();
+      else video1.addEventListener('canplay', onItemLoaded, { once: true });
+    } else onItemLoaded();
+
+    if (video2) {
+      if (video2.readyState >= 3) onItemLoaded();
+      else video2.addEventListener('canplay', onItemLoaded, { once: true });
+    } else onItemLoaded();
+
+    audio.addEventListener('canplay', onItemLoaded, { once: true });
+
+    // Fallback safety timeout (ensure loader completes in 3.5s max)
+    setTimeout(() => {
+      assetsReady = true;
+    }, 3200);
   }
 
   // 4. Typewriter with selection & deletion
@@ -252,10 +313,8 @@
         charIdx++;
       } else {
         clearInterval(typeInterval);
-        // Pause, then select all text
         setTimeout(() => {
           typewriterTextEl.classList.add('selecting');
-          // Hold selection briefly, then wipe and move to next phrase
           setTimeout(() => {
             typewriterTextEl.textContent = "";
             typewriterTextEl.classList.remove('selecting');
@@ -294,9 +353,11 @@
     viewsEl.textContent = views;
   }
 
-  // Init
+  // Initialization
   initVideoLoop();
   typePhrase();
   loadTrack(0);
   updateVolumeUI(currentVolume, false);
+  monitorAssets();
+  requestAnimationFrame(updateLoader);
 })();

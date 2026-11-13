@@ -30,43 +30,34 @@ html, body {
   overflow-x: hidden;
 }
 
-/* Click to enter overlay */
-#enter-overlay {
+/* Glowing Bloom Icon */
+.bloom-icon {
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 14px rgba(255, 255, 255, 0.6));
+  transition: filter 0.25s ease, transform 0.2s ease, opacity 0.2s ease;
+}
+
+.bloom-icon:hover {
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 1)) drop-shadow(0 0 20px rgba(255, 255, 255, 0.8));
+  transform: scale(1.08);
+}
+
+/* Preloader Screen */
+#loader-overlay {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background-color: #000000;
+  background-color: #050608;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
   transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.7s;
 }
 
-#enter-overlay.hidden-overlay {
+#loader-overlay.hidden-loader {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-}
-
-.enter-text {
-  font-family: 'Silkscreen', monospace;
-  font-size: 14px;
-  color: #ffffff;
-  letter-spacing: 0.05em;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
-  animation: pulseEnter 2s infinite ease-in-out;
-}
-
-@media (min-width: 640px) {
-  .enter-text {
-    font-size: 16px;
-  }
-}
-
-@keyframes pulseEnter {
-  0%, 100% { opacity: 0.85; transform: scale(1); }
-  50% { opacity: 0.35; transform: scale(0.98); }
 }
 
 /* Background Video Layers */
@@ -326,8 +317,8 @@ input[type=range]::-webkit-slider-thumb:hover {
 
 /* Social Dock Icons */
 .social-dock-btn {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.14);
@@ -341,8 +332,8 @@ input[type=range]::-webkit-slider-thumb:hover {
 
 @media (min-width: 640px) {
   .social-dock-btn {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
   }
 }
 
