@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SIMIIUS — Official Profile</title>
+  <meta name="description" content="Personal animated liquid glass landing page for SIMIIUS with live Spotify playback, Telegram, Steam, and socials.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💎</text></svg>">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ios: {
+              bg: '#f6f8fb',
+              glass: 'rgba(255, 255, 255, 0.55)',
+              blue: '#0071e3',
+              telegram: '#26A5E4',
+              spotify: '#1DB954',
+              steam: '#171a21',
+              zelenka: '#228B22'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Three.js (r128) for 3D Liquid Glass scene -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="selection:bg-blue-500 selection:text-white">
+
+  <!-- Three.js 3D Interactive WebGL Canvas -->
+  <div id="webgl-canvas-container"></div>
+
+  <!-- Background Ambient Glow Orbs -->
+  <div class="ambient-glow orb-1"></div>
+  <div class="ambient-glow orb-2"></div>
+
+  <!-- Main Content Wrapper -->
+  <main class="relative z-10 min-h-screen flex flex-col items-center justify-between px-4 sm:px-6 py-10 max-w-xl mx-auto">
+    
+    <!-- Top Bar Controls -->
+    <header class="w-full flex items-center justify-between mb-8">
+      <div class="liquid-glass px-4 py-2 flex items-center space-x-2 text-xs font-semibold tracking-wide text-slate-700">
+        <span class="relative flex h-2.5 w-2.5">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
+        </span>
+        <span class="tracking-wider uppercase text-[11px] text-slate-500 font-bold">iOS Liquid Glass</span>
+      </div>
+
+      <button id="sound-toggle-btn" class="liquid-glass p-2.5 rounded-full text-slate-600 hover:text-slate-900 transition flex items-center justify-center" title="Toggle Haptic Sound">
+        <i data-lucide="volume-2" class="w-4 h-4"></i>
+      </button>
+    </header>
+
+    <!-- Profile Hero Section -->
+    <section class="w-full flex flex-col items-center text-center mb-8">
+      <!-- Avatar with Dynamic Discord Glow -->
+      <div class="relative group mb-5">
+        <div class="absolute -inset-2 bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-300 rounded-full blur-xl opacity-60 group-hover:opacity-90 transition duration-700"></div>
+        <div class="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1 bg-white/70 backdrop-blur-md shadow-2xl border border-white/80 overflow-hidden">
+          <img id="user-avatar" 
+               src="https://cdn.discordapp.com/avatars/856833249770209320/08aaa959ed263406b068ae9326b1c2cd.png?size=256" 
+               alt="SIMIIUS Avatar" 
+               class="w-full h-full object-cover rounded-full select-none"
+               onerror="this.src='https://api.dicebear.com/7.x/identicon/svg?seed=SIMIIUS'"/>
+          
+          <!-- Discord Live Status Dot -->
+          <div class="absolute bottom-2 right-2 flex items-center">
+            <span id="user-status-dot" class="w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-sm"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nickname & Badges -->
+      <div class="flex items-center justify-center space-x-2 mb-1.5">
+        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight iridescent-text">SIMIIUS</h1>
+        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-500/15 text-blue-600" title="Verified Profile">
+          <i data-lucide="badge-check" class="w-4 h-4"></i>
+        </span>
+      </div>
+
+      <p class="text-slate-500 text-sm font-medium mb-3">Digital Enthusiast &bull; Gamer &bull; Music Explorer</p>
+
+      <!-- Live Discord Badge -->
+      <div class="flex items-center space-x-2 text-xs font-semibold px-3.5 py-1.5 rounded-full bg-white/50 border border-white/70 shadow-sm backdrop-blur-md text-slate-600">
+        <i data-lucide="radio" class="w-3.5 h-3.5 text-blue-500 animate-pulse"></i>
+        <span id="user-status-text">Connecting to Discord...</span>
+      </div>
+    </section>
+
+    <!-- Cards & Links Container -->
+    <section class="w-full space-y-4 mb-10">
+
+      <!-- 1. HERO PRIORITY: Telegram Card -->
+      <a href="https://t.me/simiius" target="_blank" rel="noopener noreferrer" 
+         class="liquid-glass hero-telegram-card block p-5 sm:p-6 group cursor-pointer text-left">
+        <div class="card-glare"></div>
+        <div class="relative z-10 flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <!-- Telegram Icon Badge -->
+            <div class="w-13 h-13 p-3 rounded-2xl bg-gradient-to-tr from-[#2AABEE] to-[#229ED9] text-white shadow-lg shadow-blue-400/30 group-hover:scale-105 group-hover:rotate-3 transition duration-300">
+              <svg class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-100/70 px-2.5 py-0.5 rounded-full">Primary Contact</span>
+                <span class="flex h-2 w-2 rounded-full bg-blue-500 animate-ping"></span>
+              </div>
+              <h2 class="text-lg sm:text-xl font-bold text-slate-800 group-hover:text-blue-600 transition">Telegram</h2>
+              <p class="text-xs sm:text-sm text-slate-500 font-medium">@simiius &bull; Direct messages & quick chat</p>
+            </div>
+          </div>
+          <div class="w-10 h-10 rounded-full bg-white/80 shadow-md flex items-center justify-center text-blue-600 group-hover:translate-x-1 transition duration-300">
+            <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+          </div>
+        </div>
+      </a>
+
+      <!-- 2. REAL-TIME SPOTIFY "NOW PLAYING" WIDGET -->
+      <div id="spotify-card" class="liquid-glass p-5 sm:p-6 text-left">
+        <div class="card-glare"></div>
+        <div class="relative z-10">
+          
+          <!-- Widget Header -->
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-2">
+              <svg class="w-5 h-5 text-[#1DB954]" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10s10-4.476 10-10c0-5.523-4.477-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.746 3.808-.87 7.076-.496 9.722 1.115.294.18.386.563.207.857zm1.223-2.72c-.226.367-.714.482-1.082.254-2.69-1.653-6.79-2.131-9.97-1.165-.413.125-.849-.107-.974-.521-.125-.414.108-.849.522-.975 3.633-1.103 8.147-.568 11.25 1.341.368.226.483.715.254 1.082zm.106-2.835C14.692 8.95 8.082 8.73 4.708 9.755c-.495.15-1.022-.128-1.173-.623-.15-.494.129-1.022.624-1.173 3.944-1.197 11.233-.944 14.968 1.274.445.264.59.838.327 1.282-.265.445-.838.59-1.282.327z"/>
+              </svg>
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Live Spotify Stream</span>
+            </div>
+
+            <!-- Animated Equalizer (Shown when active) -->
+            <div id="spotify-eq" class="flex items-end space-x-1 h-5">
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+            </div>
+          </div>
+
+          <!-- STATE A: ACTIVE PLAYING VIEW -->
+          <div id="spotify-playing-view" class="space-y-4">
+            <div class="flex items-center space-x-4">
+              <!-- Vinyl Record & Album Art -->
+              <div class="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0">
+                <!-- Vinyl Behind -->
+                <div class="absolute inset-0 rounded-full bg-slate-900 border-2 border-slate-700 shadow-xl flex items-center justify-center spin-vinyl">
+                  <div class="w-6 h-6 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center">
+                    <img id="spotify-vinyl-art" src="" alt="Album" class="w-4 h-4 rounded-full object-cover">
+                  </div>
+                </div>
+                <!-- Main Album Cover Front -->
+                <img id="spotify-album-art" src="" alt="Album Cover" class="relative z-10 w-full h-full rounded-2xl object-cover shadow-lg border border-white/60">
+              </div>
+
+              <!-- Track Info -->
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center space-x-2">
+                  <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 tracking-wider">Listening Now</span>
+                </div>
+                <h3 id="spotify-track-title" class="text-base sm:text-lg font-bold text-slate-900 truncate mt-1">Fetching song...</h3>
+                <p id="spotify-track-artist" class="text-xs sm:text-sm text-slate-600 font-medium truncate">Artist</p>
+                <p id="spotify-track-album" class="text-[11px] text-slate-400 truncate"></p>
+              </div>
+            </div>
+
+            <!-- Dynamic Live Progress Scrubber -->
+            <div class="space-y-1.5 pt-1">
+              <div class="relative w-full h-2 rounded-full bg-slate-200/80 overflow-hidden backdrop-blur-sm">
+                <div id="spotify-progress-bar" class="absolute left-0 top-0 h-full bg-gradient-to-r from-emerald-400 to-[#1DB954] rounded-full transition-all duration-150" style="width: 0%;"></div>
+              </div>
+              <div class="flex justify-between text-[11px] font-mono text-slate-400">
+                <span id="spotify-time-current">0:00</span>
+                <span id="spotify-time-total">0:00</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons: Listen Along & Mini Player Embed Toggle -->
+            <div class="flex flex-wrap items-center gap-2 pt-1">
+              <a id="spotify-listen-along-btn" href="#" target="_blank" rel="noopener noreferrer" 
+                 class="flex-1 min-w-[140px] px-4 py-2.5 rounded-2xl bg-[#1DB954] hover:bg-[#1aa34a] text-white text-xs font-bold flex items-center justify-center space-x-2 shadow-md shadow-emerald-500/25 transition transform active:scale-95">
+                <i data-lucide="headphones" class="w-4 h-4"></i>
+                <span>Listen Along with SIMIIUS</span>
+              </a>
+
+              <button id="toggle-embed-btn" 
+                      class="px-3.5 py-2.5 rounded-2xl bg-white/70 hover:bg-white text-slate-700 text-xs font-semibold flex items-center space-x-1.5 border border-white/80 shadow-sm transition">
+                <i data-lucide="music" class="w-4 h-4"></i>
+                <span>Mini Player</span>
+              </button>
+            </div>
+
+            <!-- Optional Embedded Spotify Web Player -->
+            <div id="spotify-embed-container" class="hidden pt-3 border-t border-slate-200/50">
+              <iframe id="spotify-embed-iframe" 
+                      class="w-full rounded-2xl shadow-inner border border-slate-200/60" 
+                      height="152" 
+                      frameborder="0" 
+                      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                      loading="lazy"></iframe>
+            </div>
+          </div>
+
+          <!-- STATE B: IDLE / PAUSED VIEW -->
+          <div id="spotify-idle-view" class="hidden py-4 text-center space-y-3">
+            <div class="w-14 h-14 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 shadow-inner">
+              <i data-lucide="disc" class="w-7 h-7"></i>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-slate-700">Currently Offline / In Between Tracks</p>
+              <p class="text-xs text-slate-400 mt-0.5">Spotify will automatically sync here when SIMIIUS hits play</p>
+            </div>
+            <a href="https://open.spotify.com/user/31jiqs7ntdo2d63m67nmknh5ul6q" target="_blank" rel="noopener noreferrer" 
+               class="inline-flex items-center space-x-2 text-xs font-bold text-emerald-600 hover:text-emerald-700 px-4 py-2 rounded-xl bg-emerald-50 border border-emerald-200/60 transition">
+              <span>View Spotify Profile</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 3. SECONDARY LINKS GRID -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        
+        <!-- Spotify Profile Link Card -->
+        <a href="https://open.spotify.com/user/31jiqs7ntdo2d63m67nmknh5ul6q" target="_blank" rel="noopener noreferrer"
+           class="liquid-glass p-4 group cursor-pointer text-left flex flex-col justify-between h-32">
+          <div class="card-glare"></div>
+          <div class="relative z-10 flex items-center justify-between">
+            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition">
+              <i data-lucide="music-2" class="w-5 h-5"></i>
+            </div>
+            <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-400 group-hover:text-emerald-500 group-hover:translate-x-0.5 transition"></i>
+          </div>
+          <div class="relative z-10">
+            <span class="text-xs font-bold text-slate-800">Spotify</span>
+            <p class="text-[11px] text-slate-500 truncate">Playlists & Library</p>
+          </div>
+        </a>
+
+        <!-- Steam Account Card -->
+        <a href="https://steamcommunity.com/id/simiius" target="_blank" rel="noopener noreferrer"
+           class="liquid-glass p-4 group cursor-pointer text-left flex flex-col justify-between h-32">
+          <div class="card-glare"></div>
+          <div class="relative z-10 flex items-center justify-between">
+            <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center group-hover:scale-110 transition shadow-sm">
+              <i data-lucide="gamepad-2" class="w-5 h-5"></i>
+            </div>
+            <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-400 group-hover:text-slate-800 group-hover:translate-x-0.5 transition"></i>
+          </div>
+          <div class="relative z-10">
+            <span class="text-xs font-bold text-slate-800">Steam</span>
+            <p class="text-[11px] text-slate-500 truncate">steam/id/simiius</p>
+          </div>
+        </a>
+
+        <!-- Lolzteam / Zelenka Card -->
+        <a href="https://zelenka.guru/members/8190065/" target="_blank" rel="noopener noreferrer"
+           class="liquid-glass p-4 group cursor-pointer text-left flex flex-col justify-between h-32">
+          <div class="card-glare"></div>
+          <div class="relative z-10 flex items-center justify-between">
+            <div class="w-10 h-10 rounded-xl bg-emerald-900 text-emerald-400 flex items-center justify-center group-hover:scale-110 transition shadow-sm font-black text-xs">
+              LZT
+            </div>
+            <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-400 group-hover:text-emerald-700 group-hover:translate-x-0.5 transition"></i>
+          </div>
+          <div class="relative z-10">
+            <span class="text-xs font-bold text-slate-800">Lolzteam</span>
+            <p class="text-[11px] text-slate-500 truncate">zelenka.guru profile</p>
+          </div>
+        </a>
+
+      </div>
+
+      <!-- Quick Action: Copy Discord ID -->
+      <button id="copy-discord-btn" class="liquid-glass w-full py-3 px-4 flex items-center justify-center space-x-2 text-xs font-semibold text-slate-600 hover:text-slate-900 transition">
+        <div class="card-glare"></div>
+        <i data-lucide="copy" class="w-4 h-4 text-blue-500"></i>
+        <span id="copy-discord-text">Discord: simiius (Click to Copy ID)</span>
+      </button>
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="w-full text-center py-4 border-t border-slate-200/50">
+      <p class="text-xs text-slate-400 font-medium">
+        &copy; 2026 SIMIIUS &bull; Designed in iOS Liquid Glass Style
+      </p>
+    </footer>
+
+  </main>
+
+  <!-- Lucide Icon Initialization -->
+  <script>
+    lucide.createIcons();
+
+    // Subtle Web Audio Glass Click Feedback
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    let soundEnabled = true;
+
+    function playGlassChime() {
+      if (!soundEnabled || !audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1400, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.08);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.08);
+    }
+
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('click', playGlassChime);
+    });
+
+    // Sound Toggle Button
+    const soundBtn = document.getElementById('sound-toggle-btn');
+    soundBtn.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      soundBtn.innerHTML = soundEnabled 
+        ? '<i data-lucide="volume-2" class="w-4 h-4"></i>'
+        : '<i data-lucide="volume-x" class="w-4 h-4"></i>';
+      lucide.createIcons();
+    });
+
+    // Copy Discord ID Button
+    const copyBtn = document.getElementById('copy-discord-btn');
+    const copyText = document.getElementById('copy-discord-text');
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText('856833249770209320').then(() => {
+        copyText.textContent = 'Copied ID (856833249770209320) to clipboard!';
+        setTimeout(() => {
+          copyText.textContent = 'Discord: simiius (Click to Copy ID)';
+        }, 2500);
+      });
+    });
+  </script>
+
+  <!-- Three.js Scene & Lanyard Scripts -->
+  <script src="three-scene.js"></script>
+  <script src="lanyard.js"></script>
+</body>
+</html>
