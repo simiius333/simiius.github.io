@@ -21,7 +21,7 @@
               telegram: '#26A5E4',
               spotify: '#1DB954',
               steam: '#171a21',
-              zelenka: '#228B22'
+              zelenka: '#23A86D'
             }
           }
         }
@@ -48,29 +48,21 @@
   <div class="ambient-glow orb-2"></div>
 
   <!-- Main Content Wrapper -->
-  <main class="relative z-10 min-h-screen flex flex-col items-center justify-between px-4 sm:px-6 py-10 max-w-xl mx-auto">
+  <main class="relative z-10 min-h-screen flex flex-col items-center justify-between px-4 sm:px-6 py-8 sm:py-10 max-w-xl mx-auto">
     
     <!-- Top Bar Controls -->
-    <header class="w-full flex items-center justify-between mb-8">
-      <div class="liquid-glass px-4 py-2 flex items-center space-x-2 text-xs font-semibold tracking-wide text-slate-700">
-        <span class="relative flex h-2.5 w-2.5">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
-        </span>
-        <span class="tracking-wider uppercase text-[11px] text-slate-500 font-bold">iOS Liquid Glass</span>
-      </div>
-
-      <button id="sound-toggle-btn" class="liquid-glass p-2.5 rounded-full text-slate-600 hover:text-slate-900 transition flex items-center justify-center" title="Toggle Haptic Sound">
+    <header class="w-full flex items-center justify-end mb-6">
+      <button id="sound-toggle-btn" class="liquid-glass p-2.5 rounded-full text-slate-500 hover:text-slate-900 transition flex items-center justify-center shadow-sm" title="Toggle Haptic Sound">
         <i data-lucide="volume-2" class="w-4 h-4"></i>
       </button>
     </header>
 
     <!-- Profile Hero Section -->
-    <section class="w-full flex flex-col items-center text-center mb-8">
-      <!-- Avatar with Dynamic Discord Glow -->
-      <div class="relative group mb-5">
+    <section class="w-full flex flex-col items-center text-center mb-7">
+      <!-- Avatar with Dynamic Glow -->
+      <div class="relative group mb-4">
         <div class="absolute -inset-2 bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-300 rounded-full blur-xl opacity-60 group-hover:opacity-90 transition duration-700"></div>
-        <div class="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1 bg-white/70 backdrop-blur-md shadow-2xl border border-white/80 overflow-hidden">
+        <div class="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1 bg-white/80 backdrop-blur-md shadow-2xl border border-white/90 overflow-hidden">
           <img id="user-avatar" 
                src="https://cdn.discordapp.com/avatars/856833249770209320/08aaa959ed263406b068ae9326b1c2cd.png?size=256" 
                alt="SIMIIUS Avatar" 
@@ -85,7 +77,7 @@
       </div>
 
       <!-- Nickname & Badges -->
-      <div class="flex items-center justify-center space-x-2 mb-1.5">
+      <div class="flex items-center justify-center space-x-2 mb-1">
         <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight iridescent-text">SIMIIUS</h1>
         <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-500/15 text-blue-600" title="Verified Profile">
           <i data-lucide="badge-check" class="w-4 h-4"></i>
@@ -94,24 +86,24 @@
 
       <p class="text-slate-500 text-sm font-medium mb-3">Digital Enthusiast &bull; Gamer &bull; Music Explorer</p>
 
-      <!-- Live Discord Badge -->
-      <div class="flex items-center space-x-2 text-xs font-semibold px-3.5 py-1.5 rounded-full bg-white/50 border border-white/70 shadow-sm backdrop-blur-md text-slate-600">
+      <!-- Live Discord Presence Pill -->
+      <div class="flex items-center space-x-2 text-xs font-semibold px-3.5 py-1.5 rounded-full bg-white/60 border border-white/80 shadow-sm backdrop-blur-md text-slate-600">
         <i data-lucide="radio" class="w-3.5 h-3.5 text-blue-500 animate-pulse"></i>
-        <span id="user-status-text">Connecting to Discord...</span>
+        <span id="user-status-text">Online in Discord</span>
       </div>
     </section>
 
     <!-- Cards & Links Container -->
-    <section class="w-full space-y-4 mb-10">
+    <section class="w-full space-y-4 mb-8">
 
-      <!-- 1. HERO PRIORITY: Telegram Card -->
+      <!-- 1. HERO PRIORITY: Telegram Card with Official Telegram Logo -->
       <a href="https://t.me/simiius" target="_blank" rel="noopener noreferrer" 
          class="liquid-glass hero-telegram-card block p-5 sm:p-6 group cursor-pointer text-left">
         <div class="card-glare"></div>
         <div class="relative z-10 flex items-center justify-between">
           <div class="flex items-center space-x-4">
-            <!-- Telegram Icon Badge -->
-            <div class="w-13 h-13 p-3 rounded-2xl bg-gradient-to-tr from-[#2AABEE] to-[#229ED9] text-white shadow-lg shadow-blue-400/30 group-hover:scale-105 group-hover:rotate-3 transition duration-300">
+            <!-- Official Telegram Logo -->
+            <div class="w-13 h-13 shrink-0 p-3 rounded-2xl bg-gradient-to-tr from-[#2AABEE] to-[#229ED9] text-white shadow-lg shadow-blue-400/30 group-hover:scale-105 group-hover:rotate-3 transition duration-300 flex items-center justify-center">
               <svg class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
               </svg>
@@ -140,12 +132,12 @@
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center space-x-2">
               <svg class="w-5 h-5 text-[#1DB954]" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.477 2 2 6.477 2 12c0 5.524 4.477 10 10 10s10-4.476 10-10c0-5.523-4.477-10-10-10zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.308-1.758-8.793-.963-.335.077-.67-.133-.746-.469-.077-.334.132-.67.467-.746 3.808-.87 7.076-.496 9.722 1.115.294.18.386.563.207.857zm1.223-2.72c-.226.367-.714.482-1.082.254-2.69-1.653-6.79-2.131-9.97-1.165-.413.125-.849-.107-.974-.521-.125-.414.108-.849.522-.975 3.633-1.103 8.147-.568 11.25 1.341.368.226.483.715.254 1.082zm.106-2.835C14.692 8.95 8.082 8.73 4.708 9.755c-.495.15-1.022-.128-1.173-.623-.15-.494.129-1.022.624-1.173 3.944-1.197 11.233-.944 14.968 1.274.445.264.59.838.327 1.282-.265.445-.838.59-1.282.327z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.494 17.303c-.215.352-.676.464-1.028.249-2.818-1.722-6.365-2.111-10.542-1.157-.402.092-.803-.16-.895-.562-.092-.403.159-.804.562-.896 4.571-1.045 8.492-.596 11.654 1.338.353.215.464.676.249 1.028zm1.468-3.264c-.27.44-.848.579-1.287.31-3.226-1.983-8.144-2.557-11.958-1.399-.494.15-1.022-.134-1.172-.628-.15-.493.134-1.022.628-1.171 4.357-1.323 9.774-.683 13.479 1.599.44.27.579.849.31 1.289zm.126-3.414C15.228 8.32 8.85 8.11 5.158 9.23c-.604.184-1.242-.162-1.425-.765-.183-.604.162-1.242.765-1.425 4.246-1.289 11.294-1.045 15.733 1.59.544.323.722 1.028.4 1.572-.323.543-1.029.722-1.571.4z"/>
               </svg>
               <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Live Spotify Stream</span>
             </div>
 
-            <!-- Animated Equalizer (Shown when active) -->
+            <!-- Animated Equalizer -->
             <div id="spotify-eq" class="flex items-end space-x-1 h-5">
               <span class="eq-bar"></span>
               <span class="eq-bar"></span>
@@ -191,7 +183,7 @@
               </div>
             </div>
 
-            <!-- Action Buttons: Listen Along & Mini Player Embed Toggle -->
+            <!-- Action Buttons: Listen Along & Mini Player Toggle -->
             <div class="flex flex-wrap items-center gap-2 pt-1">
               <a id="spotify-listen-along-btn" href="#" target="_blank" rel="noopener noreferrer" 
                  class="flex-1 min-w-[140px] px-4 py-2.5 rounded-2xl bg-[#1DB954] hover:bg-[#1aa34a] text-white text-xs font-bold flex items-center justify-center space-x-2 shadow-md shadow-emerald-500/25 transition transform active:scale-95">
@@ -206,7 +198,7 @@
               </button>
             </div>
 
-            <!-- Optional Embedded Spotify Web Player -->
+            <!-- Embedded Spotify Web Player -->
             <div id="spotify-embed-container" class="hidden pt-3 border-t border-slate-200/50">
               <iframe id="spotify-embed-iframe" 
                       class="w-full rounded-2xl shadow-inner border border-slate-200/60" 
@@ -236,18 +228,21 @@
         </div>
       </div>
 
-      <!-- 3. SECONDARY LINKS GRID -->
+      <!-- 3. SECONDARY LINKS GRID (AUTHENTIC OFFICIAL BRAND ICONS) -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
         
-        <!-- Spotify Profile Link Card -->
+        <!-- Official Spotify Profile Card -->
         <a href="https://open.spotify.com/user/31jiqs7ntdo2d63m67nmknh5ul6q" target="_blank" rel="noopener noreferrer"
-           class="liquid-glass p-4 group cursor-pointer text-left flex flex-col justify-between h-32">
+           class="liquid-glass p-4 group cursor-pointer text-left flex flex-col justify-between h-32 hover:border-[#1DB954]/50 transition duration-300">
           <div class="card-glare"></div>
           <div class="relative z-10 flex items-center justify-between">
-            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition">
-              <i data-lucide="music-2" class="w-5 h-5"></i>
+            <!-- Official Spotify Logo -->
+            <div class="w-10 h-10 rounded-xl bg-[#1DB954]/10 text-[#1DB954] flex items-center justify-center group-hover:scale-110 transition duration-300 shadow-sm">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.494 17.303c-.215.352-.676.464-1.028.249-2.818-1.722-6.365-2.111-10.542-1.157-.402.092-.803-.16-.895-.562-.092-.403.159-.804.562-.896 4.571-1.045 8.492-.596 11.654 1.338.353.215.464.676.249 1.028zm1.468-3.264c-.27.44-.848.579-1.287.31-3.226-1.983-8.144-2.557-11.958-1.399-.494.15-1.022-.134-1.172-.628-.15-.493.134-1.022.628-1.171 4.357-1.323 9.774-.683 13.479 1.599.44.27.579.849.31 1.289zm.126-3.414C15.228 8.32 8.85 8.11 5.158 9.23c-.604.184-1.242-.162-1.425-.765-.183-.604.162-1.242.765-1.425 4.246-1.289 11.294-1.045 15.733 1.59.544.323.722 1.028.4 1.572-.323.543-1.029.722-1.571.4z"/>
+              </svg>
             </div>
-            <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-400 group-hover:text-emerald-500 group-hover:translate-x-0.5 transition"></i>
+            <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-400 group-hover:text-[#1DB954] group-hover:translate-x-0.5 transition"></i>
           </div>
           <div class="relative z-10">
             <span class="text-xs font-bold text-slate-800">Spotify</span>
@@ -255,15 +250,18 @@
           </div>
         </a>
 
-        <!-- Steam Account Card -->
+        <!-- Official Steam Account Card -->
         <a href="https://steamcommunity.com/id/simiius" target="_blank" rel="noopener noreferrer"
-           class="liquid-glass p-4 group cursor-pointer text-left flex flex-col justify-between h-32">
+           class="liquid-glass p-4 group cursor-pointer text-left flex flex-col justify-between h-32 hover:border-slate-800/40 transition duration-300">
           <div class="card-glare"></div>
           <div class="relative z-10 flex items-center justify-between">
-            <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center group-hover:scale-110 transition shadow-sm">
-              <i data-lucide="gamepad-2" class="w-5 h-5"></i>
+            <!-- Official Steam Logo -->
+            <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center group-hover:scale-110 transition duration-300 shadow-sm">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.029 4.524 4.524s-2.03 4.524-4.524 4.524h-.105l-4.076 2.911c0 .052.005.105.005.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 12-5.373 12-12s-5.373-12-12-12zM7.557 14.867l-.442-.183c.365.485.586 1.085.586 1.74 0 .373-.075.726-.207 1.05l.395.163c.531-.418.878-1.066.878-1.799 0-.342-.075-.664-.21-.971zm8.39-8.497c-1.396 0-2.533 1.137-2.533 2.533s1.137 2.534 2.533 2.534c1.397 0 2.534-1.138 2.534-2.534 0-1.396-1.137-2.533-2.534-2.533zm0 .844c.933 0 1.689.756 1.689 1.689 0 .933-.756 1.69-1.689 1.69-.932 0-1.688-.757-1.688-1.69 0-.933.756-1.689 1.688-1.689zM5.337 16.424c0 .932.756 1.689 1.688 1.689.176 0 .343-.031.503-.082l-2.109-.872c-.053-.23-.082-.473-.082-.735z"/>
+              </svg>
             </div>
-            <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-400 group-hover:text-slate-800 group-hover:translate-x-0.5 transition"></i>
+            <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-0.5 transition"></i>
           </div>
           <div class="relative z-10">
             <span class="text-xs font-bold text-slate-800">Steam</span>
@@ -271,15 +269,18 @@
           </div>
         </a>
 
-        <!-- Lolzteam / Zelenka Card -->
+        <!-- Official Lolzteam / Zelenka Card -->
         <a href="https://zelenka.guru/members/8190065/" target="_blank" rel="noopener noreferrer"
-           class="liquid-glass p-4 group cursor-pointer text-left flex flex-col justify-between h-32">
+           class="liquid-glass p-4 group cursor-pointer text-left flex flex-col justify-between h-32 hover:border-[#23A86D]/50 transition duration-300">
           <div class="card-glare"></div>
           <div class="relative z-10 flex items-center justify-between">
-            <div class="w-10 h-10 rounded-xl bg-emerald-900 text-emerald-400 flex items-center justify-center group-hover:scale-110 transition shadow-sm font-black text-xs">
-              LZT
+            <!-- Official Lolzteam Geometric Mark -->
+            <div class="w-10 h-10 rounded-xl bg-[#23A86D]/15 text-[#23A86D] flex items-center justify-center group-hover:scale-110 transition duration-300 shadow-sm">
+              <svg class="w-7 h-4" viewBox="0 0 90 40" fill="currentColor">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M49,31V13h15.1l4-4H16v4h17L21,32h-8V9H9v27h59l-4-4H49V31 M26,32h19v-1V13h-7L26,32z"/>
+              </svg>
             </div>
-            <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-400 group-hover:text-emerald-700 group-hover:translate-x-0.5 transition"></i>
+            <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-400 group-hover:text-[#23A86D] group-hover:translate-x-0.5 transition"></i>
           </div>
           <div class="relative z-10">
             <span class="text-xs font-bold text-slate-800">Lolzteam</span>
@@ -289,19 +290,12 @@
 
       </div>
 
-      <!-- Quick Action: Copy Discord ID -->
-      <button id="copy-discord-btn" class="liquid-glass w-full py-3 px-4 flex items-center justify-center space-x-2 text-xs font-semibold text-slate-600 hover:text-slate-900 transition">
-        <div class="card-glare"></div>
-        <i data-lucide="copy" class="w-4 h-4 text-blue-500"></i>
-        <span id="copy-discord-text">Discord: simiius (Click to Copy ID)</span>
-      </button>
-
     </section>
 
-    <!-- Footer -->
-    <footer class="w-full text-center py-4 border-t border-slate-200/50">
+    <!-- Footer: Clean & Minimal -->
+    <footer class="w-full text-center py-4 border-t border-slate-200/40">
       <p class="text-xs text-slate-400 font-medium">
-        &copy; 2026 SIMIIUS &bull; Designed in iOS Liquid Glass Style
+        &copy; 2026 SIMIIUS
       </p>
     </footer>
 
@@ -343,18 +337,6 @@
         ? '<i data-lucide="volume-2" class="w-4 h-4"></i>'
         : '<i data-lucide="volume-x" class="w-4 h-4"></i>';
       lucide.createIcons();
-    });
-
-    // Copy Discord ID Button
-    const copyBtn = document.getElementById('copy-discord-btn');
-    const copyText = document.getElementById('copy-discord-text');
-    copyBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText('856833249770209320').then(() => {
-        copyText.textContent = 'Copied ID (856833249770209320) to clipboard!';
-        setTimeout(() => {
-          copyText.textContent = 'Discord: simiius (Click to Copy ID)';
-        }, 2500);
-      });
     });
   </script>
 
