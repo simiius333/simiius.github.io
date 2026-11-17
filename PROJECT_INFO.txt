@@ -1,0 +1,39 @@
+==================================================
+SIMIIUS LANDING - PROJECT ARCHIVE & CONFIG INFO
+==================================================
+
+1. LIVE WEBSITES:
+-----------------
+- Primary: https://simiius333.github.io/
+- Mirror:  https://simiius333.github.io/simiius.github.io/
+
+2. GITHUB REPOSITORIES:
+-----------------------
+- Main Repo:    https://github.com/simiius333/simiius333.github.io
+- Backup Repo:  https://github.com/simiius333/simiius.github.io
+- GitHub PAT:   ghp_REDACTED_SECURITY
+- GitHub User:  simiius333
+
+3. DISCORD & LANYARD INTEGRATION:
+---------------------------------
+- Discord User ID: 856833249770209320
+- Discord Handle:  simiius
+- Lanyard REST:    https://api.lanyard.rest/v1/users/856833249770209320
+- Lanyard WS:      wss://api.lanyard.rest/socket
+
+4. MEDIA ASSETS INCLUDED:
+-------------------------
+- assets/bg1.mp4 (Background Video 1 - loop seamlessly)
+- assets/bg2.mp4 (Background Video 2 - loop seamlessly)
+- assets/track1.mp3 (Cafune - Tek It)
+- assets/track2.mp3 (Egzod - Royalty)
+- assets/cover1.jpg (Album art 1)
+- assets/cover2.jpg (Album art 2)
+
+5. HOW TO RUN LOCALLY:
+----------------------
+Open folder in terminal or VS Code, and run:
+  python -m http.server 8000
+Then open in browser:
+  http://localhost:8000/
+==================================================

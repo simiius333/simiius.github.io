@@ -1,379 +1,644 @@
-// Audio Player, Video Loop, Asset Preloader & Typewriter Controller
-(function () {
-  // 1. Playlists Configuration
+/**
+ * SIMIIUS Cyberpunk Personal Bio - Player & Interactions Controller
+ * Handles Preloader, Dual Video Looper, Typewriter with Blue Selection,
+ * Custom Audio Player with Waveform Equalizer, and Live Visitor Counter.
+ */
+
+document.addEventListener('DOMContentLoaded', () => {
+  'use strict';
+
+  /* ==========================================================================
+     1. PLAYLIST CONFIGURATION
+     ========================================================================== */
   const playlist = [
     {
-      title: "Tek It (I Watch the Moon)",
-      artist: "Cafuné",
-      src: "assets/track1.mp3",
-      cover: "assets/cover1.jpg"
+      title: 'Tek It',
+      artist: 'Cafuné',
+      src: 'assets/tek-it.mp3',
+      cover: 'assets/cover1.jpg',
     },
     {
-      title: "Royalty",
-      artist: "Egzod, Maestro Chives",
-      src: "assets/track2.mp3",
-      cover: "assets/cover2.jpg"
+      title: 'Royalty (ft. Neoni)',
+      artist: 'Egzod & Maestro Chives',
+      src: 'assets/royalty.mp3',
+      cover: 'assets/cover2.jpg',
     }
   ];
 
-  let currentTrackIdx = 0;
+  let currentTrackIndex = 0;
+  let isAudioPlaying = false;
+  let lastVolume = 0.8;
+
+  // Audio element
   const audio = new Audio();
-  audio.preload = "auto";
-  let isPlaying = false;
-  let isMuted = false;
-  let currentVolume = 0.8;
-  audio.volume = currentVolume;
+  audio.preload = 'auto';
+  audio.volume = lastVolume;
 
-  // DOM Elements
-  const loaderOverlay = document.getElementById('loader-overlay');
-  const loaderBar = document.getElementById('loader-progress-bar');
-  const loaderPercent = document.getElementById('loader-percentage');
-  const loaderStatus = document.getElementById('loader-status-text');
+  /* ==========================================================================
+     2. DOM ELEMENTS
+     ========================================================================== */
+  // Preloader
+  const preloader = document.getElementById('preloader');
+  const preloaderBar = document.getElementById('preloader-bar');
+  const preloaderPercent = document.getElementById('preloader-percent');
+  const preloaderStatus = document.getElementById('preloader-status');
 
-  const video1 = document.getElementById('bg-video-1');
-  const video2 = document.getElementById('bg-video-2');
+  // Background Videos
+  const bgVideo1 = document.getElementById('bg-video-1');
+  const bgVideo2 = document.getElementById('bg-video-2');
 
-  const playerCover = document.getElementById('player-cover');
-  const playerTitle = document.getElementById('player-title');
-  const playerArtist = document.getElementById('player-artist');
+  // Top Floating Audio Button
+  const topAudioBtn = document.getElementById('top-audio-btn');
+  const topAudioIcon = document.getElementById('top-audio-icon');
+
+  // Typewriter
+  const typewriterText = document.getElementById('typewriter-text');
+
+  // BIO Accordion
+  const bioToggleBtn = document.getElementById('bio-accordion-toggle');
+  const bioContent = document.getElementById('bio-accordion-content');
+  const bioChevron = document.getElementById('bio-chevron');
+
+  // Audio Player UI
+  const playerCard = document.getElementById('audio-player-card');
+  const trackCover = document.getElementById('player-cover');
+  const trackTitle = document.getElementById('player-track-title');
+  const trackArtist = document.getElementById('player-track-artist');
+  const trackIndexDisplay = document.getElementById('player-track-index');
   const playPauseBtn = document.getElementById('player-play-btn');
-  const prevBtn = document.getElementById('player-prev-btn');
-  const nextBtn = document.getElementById('player-next-btn');
-  const progressBar = document.getElementById('player-progress');
-  const timeCurrent = document.getElementById('player-time-current');
-  const timeTotal = document.getElementById('player-time-total');
-  const audioBars = document.getElementById('player-audio-bars');
-  const volumeToggleBtn = document.getElementById('top-volume-btn');
-  const trackIndexEl = document.getElementById('player-track-index');
+  const playPauseIcon = document.getElementById('player-play-icon');
+  const prevTrackBtn = document.getElementById('player-prev-btn');
+  const nextTrackBtn = document.getElementById('player-next-btn');
+  const scrubber = document.getElementById('player-scrubber');
+  const currentTimeDisplay = document.getElementById('player-current-time');
+  const totalDurationDisplay = document.getElementById('player-total-time');
+  const volumeSlider = document.getElementById('player-volume-slider');
+  const volumeMuteBtn = document.getElementById('player-volume-btn');
+  const volumeIcon = document.getElementById('player-volume-icon');
 
-  // Player Volume Controls
-  const playerVolSlider = document.getElementById('player-volume-slider');
-  const playerVolBtn = document.getElementById('player-volume-icon-btn');
-  const playerVolSvg = document.getElementById('player-volume-svg');
+  // Visitor Counter
+  const visitorCountDisplay = document.getElementById('visitor-count-value');
 
-  // Format MM:SS
-  function formatTime(sec) {
-    if (isNaN(sec) || sec < 0) return "0:00";
-    const m = Math.floor(sec / 60);
-    const s = Math.floor(sec % 60);
-    return `${m}:${s < 10 ? '0' : ''}${s}`;
+  /* ==========================================================================
+     3. DYNAMIC ASSET PRELOADER (Tracks video & audio buffering + readiness)
+     ========================================================================== */
+  let simulatedProgress = 0;
+  let assetsReady = false;
+
+  function updatePreloader(val, statusText) {
+    simulatedProgress = Math.min(100, Math.max(simulatedProgress, Math.round(val)));
+    if (preloaderBar) preloaderBar.style.width = `${simulatedProgress}%`;
+    if (preloaderPercent) preloaderPercent.textContent = `${simulatedProgress}%`;
+    if (preloaderStatus && statusText) preloaderStatus.textContent = statusText;
+
+    if (simulatedProgress >= 100 && !assetsReady) {
+      assetsReady = true;
+      setTimeout(() => {
+        if (preloader) {
+          preloader.classList.add('loaded');
+          // Allow interactions and start animations
+          initPostLoad();
+        }
+      }, 400);
+    }
   }
 
-  // Load Track
-  function loadTrack(index) {
-    currentTrackIdx = (index + playlist.length) % playlist.length;
-    const track = playlist[currentTrackIdx];
-    audio.src = track.src;
-    if (playerTitle) playerTitle.textContent = track.title;
-    if (playerArtist) playerArtist.textContent = track.artist;
-    if (playerCover) playerCover.src = track.cover;
-    if (progressBar) progressBar.value = 0;
-    if (timeCurrent) timeCurrent.textContent = "0:00";
-    if (trackIndexEl) trackIndexEl.textContent = `${currentTrackIdx + 1} / ${playlist.length}`;
-  }
+  // Preload initial track
+  audio.src = playlist[currentTrackIndex].src;
+  updateTrackUI();
 
-  function playTrack() {
-    audio.play().then(() => {
-      isPlaying = true;
-      updatePlayBtnState();
-      if (audioBars) audioBars.classList.remove('audio-bar-paused');
-    }).catch(e => {
-      console.log('Autoplay policy caught, will play on next interaction:', e);
-      // Fallback listener for first user interaction
-      const playOnInteraction = () => {
-        audio.play().then(() => {
-          isPlaying = true;
-          updatePlayBtnState();
-          if (audioBars) audioBars.classList.remove('audio-bar-paused');
-        }).catch(err => console.log(err));
-        window.removeEventListener('click', playOnInteraction);
-        window.removeEventListener('touchstart', playOnInteraction);
-      };
-      window.addEventListener('click', playOnInteraction, { once: true });
-      window.addEventListener('touchstart', playOnInteraction, { once: true });
+  // Progress simulation combined with real events
+  const preloadInterval = setInterval(() => {
+    let targetProgress = 10;
+
+    // Check DOM readiness
+    if (document.readyState === 'interactive' || document.readyState === 'complete') {
+      targetProgress += 20;
+    }
+    if (document.readyState === 'complete') {
+      targetProgress += 15;
+    }
+
+    // Check Audio buffered
+    if (audio.readyState >= 2) {
+      targetProgress += 25;
+    }
+
+    // Check Video 1 buffered
+    if (bgVideo1 && bgVideo1.readyState >= 2) {
+      targetProgress += 20;
+    }
+
+    // Check Video 2 buffered
+    if (bgVideo2 && bgVideo2.readyState >= 2) {
+      targetProgress += 10;
+    }
+
+    // Incremental step
+    if (simulatedProgress < targetProgress) {
+      simulatedProgress += 3;
+    } else if (simulatedProgress < 95) {
+      simulatedProgress += 1;
+    }
+
+    let status = 'CONNECTING TO NEURAL MESH...';
+    if (simulatedProgress > 30) status = 'BUFFERING AMBIENT VIDEO STREAMS...';
+    if (simulatedProgress > 60) status = 'SYNCHRONIZING AUDIO CHANNELS...';
+    if (simulatedProgress > 85) status = 'INITIALIZING INTERFACE...';
+    if (simulatedProgress >= 100) status = 'SYSTEM ONLINE';
+
+    updatePreloader(simulatedProgress, status);
+
+    if (simulatedProgress >= 100) {
+      clearInterval(preloadInterval);
+    }
+  }, 40);
+
+  // Fallback safety timeout (maximum 3.5s loading)
+  setTimeout(() => {
+    updatePreloader(100, 'SYSTEM ONLINE');
+  }, 3500);
+
+  /* ==========================================================================
+     4. DUAL BACKGROUND VIDEO LOOPER (Seamless crossfade loop)
+     ========================================================================== */
+  let activeVideo = 1; // 1 or 2
+  let isCrossfading = false;
+
+  function initVideoLooper() {
+    if (!bgVideo1 || !bgVideo2) return;
+
+    // Enforce 100% silent background videos
+    bgVideo1.muted = true;
+    bgVideo1.volume = 0;
+    bgVideo2.muted = true;
+    bgVideo2.volume = 0;
+
+    // Ensure muted, loop, and playsinline attributes
+    bgVideo1.setAttribute('muted', '');
+    bgVideo1.setAttribute('loop', '');
+    bgVideo1.setAttribute('playsinline', '');
+    bgVideo1.setAttribute('webkit-playsinline', '');
+
+    bgVideo2.setAttribute('muted', '');
+    bgVideo2.setAttribute('loop', '');
+    bgVideo2.setAttribute('playsinline', '');
+    bgVideo2.setAttribute('webkit-playsinline', '');
+
+    // Attempt autoplay for muted videos
+    const playPromise1 = bgVideo1.play();
+    if (playPromise1 !== undefined) {
+      playPromise1.catch(err => console.log('Video 1 autoplay waiting for gesture'));
+    }
+
+    bgVideo1.addEventListener('timeupdate', () => {
+      // When video 1 is within 1.2s of its end, crossfade to video 2
+      if (activeVideo === 1 && !isCrossfading && bgVideo1.duration) {
+        if (bgVideo1.duration - bgVideo1.currentTime <= 1.2) {
+          crossfadeToVideo(2);
+        }
+      }
+    });
+
+    bgVideo2.addEventListener('timeupdate', () => {
+      // When video 2 is within 1.2s of its end, crossfade to video 1
+      if (activeVideo === 2 && !isCrossfading && bgVideo2.duration) {
+        if (bgVideo2.duration - bgVideo2.currentTime <= 1.2) {
+          crossfadeToVideo(1);
+        }
+      }
+    });
+
+    // Handle ended events as safety
+    bgVideo1.addEventListener('ended', () => {
+      if (activeVideo === 1 && !isCrossfading) crossfadeToVideo(2);
+    });
+    bgVideo2.addEventListener('ended', () => {
+      if (activeVideo === 2 && !isCrossfading) crossfadeToVideo(1);
     });
   }
 
-  function pauseTrack() {
+  function crossfadeToVideo(target) {
+    if (isCrossfading) return;
+    isCrossfading = true;
+
+    if (target === 2) {
+      bgVideo2.muted = true;
+      bgVideo2.volume = 0;
+      bgVideo2.currentTime = 0;
+      bgVideo2.play().then(() => {
+        bgVideo2.classList.add('active');
+        bgVideo1.classList.remove('active');
+        activeVideo = 2;
+        setTimeout(() => {
+          isCrossfading = false;
+          try { bgVideo1.pause(); } catch (e) {}
+        }, 1400);
+      }).catch(err => {
+        console.warn('Video 2 play failed:', err);
+        isCrossfading = false;
+      });
+    } else {
+      bgVideo1.muted = true;
+      bgVideo1.volume = 0;
+      bgVideo1.currentTime = 0;
+      bgVideo1.play().then(() => {
+        bgVideo1.classList.add('active');
+        bgVideo2.classList.remove('active');
+        activeVideo = 1;
+        setTimeout(() => {
+          isCrossfading = false;
+          try { bgVideo2.pause(); } catch (e) {}
+        }, 1400);
+      }).catch(err => {
+        console.warn('Video 1 play failed:', err);
+        isCrossfading = false;
+      });
+    }
+  }
+
+  /* ==========================================================================
+     5. INTERACTIVE HERO & TYPEWRITER WITH BLUE SELECTION
+     ========================================================================== */
+  const phrases = [
+    'DEVELOPER ✦ EDIT',
+    'VISIONOS ✦ CYBERPUNK',
+    'CREATIVE FULL-STACK',
+    'SOUNDSCAPE ✦ UI/UX'
+  ];
+
+  let phraseIndex = 0;
+
+  function initTypewriter() {
+    if (!typewriterText) return;
+
+    let currentPhrase = phrases[phraseIndex];
+    let charIndex = 0;
+
+    function typeChar() {
+      if (charIndex <= currentPhrase.length) {
+        typewriterText.innerHTML = escapeHtml(currentPhrase.slice(0, charIndex));
+        charIndex++;
+        setTimeout(typeChar, 75 + Math.random() * 45);
+      } else {
+        // Full phrase typed; pause for 2 seconds
+        setTimeout(selectPhrase, 2000);
+      }
+    }
+
+    function selectPhrase() {
+      // Real text selection simulation: wrap text in blue highlight
+      let fullText = currentPhrase;
+      let selectionLen = 0;
+
+      const selInterval = setInterval(() => {
+        selectionLen += 2;
+        if (selectionLen >= fullText.length) {
+          clearInterval(selInterval);
+          // Entire text selected
+          typewriterText.innerHTML = `<span class="typewriter-selection">${escapeHtml(fullText)}</span>`;
+          // Brief pause after selection, then delete
+          setTimeout(deletePhrase, 450);
+        } else {
+          const unselected = fullText.slice(0, fullText.length - selectionLen);
+          const selected = fullText.slice(fullText.length - selectionLen);
+          typewriterText.innerHTML = `${escapeHtml(unselected)}<span class="typewriter-selection">${escapeHtml(selected)}</span>`;
+        }
+      }, 35);
+    }
+
+    function deletePhrase() {
+      // Clear selected text instantly, advance to next phrase
+      typewriterText.innerHTML = '';
+      phraseIndex = (phraseIndex + 1) % phrases.length;
+      currentPhrase = phrases[phraseIndex];
+      charIndex = 0;
+      setTimeout(typeChar, 350);
+    }
+
+    // Start typing
+    typeChar();
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  /* ==========================================================================
+     6. PROFILE CAPSULE & EXPANDABLE BIO ACCORDION
+     ========================================================================== */
+  function initBioAccordion() {
+    if (!bioToggleBtn || !bioContent) return;
+
+    bioToggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isExpanded = bioContent.classList.toggle('expanded');
+      bioToggleBtn.setAttribute('aria-expanded', isExpanded);
+
+      if (bioChevron) {
+        bioChevron.style.transform = isExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
+      }
+    });
+  }
+
+  /* ==========================================================================
+     7. CUSTOM BUILT-IN AUDIO PLAYER CONTROLLER
+     ========================================================================== */
+  function updateTrackUI() {
+    const track = playlist[currentTrackIndex];
+    if (trackTitle) trackTitle.textContent = track.title;
+    if (trackArtist) trackArtist.textContent = track.artist;
+    if (trackCover) trackCover.src = track.cover;
+    if (trackIndexDisplay) {
+      trackIndexDisplay.textContent = `${currentTrackIndex + 1} / ${playlist.length}`;
+    }
+    if (scrubber) scrubber.value = 0;
+    if (currentTimeDisplay) currentTimeDisplay.textContent = '00:00';
+    if (totalDurationDisplay) totalDurationDisplay.textContent = '00:00';
+  }
+
+  function loadTrack(index, autoPlay = false) {
+    currentTrackIndex = (index + playlist.length) % playlist.length;
+    audio.src = playlist[currentTrackIndex].src;
+    updateTrackUI();
+
+    if (autoPlay) {
+      playAudio();
+    } else {
+      pauseAudio();
+    }
+  }
+
+  function playAudio() {
+    audio.play().then(() => {
+      isAudioPlaying = true;
+      updatePlayStateUI(true);
+    }).catch(err => {
+      console.log('Audio playback prevented by browser:', err);
+      isAudioPlaying = false;
+      updatePlayStateUI(false);
+    });
+  }
+
+  function pauseAudio() {
     audio.pause();
-    isPlaying = false;
-    updatePlayBtnState();
-    if (audioBars) audioBars.classList.add('audio-bar-paused');
+    isAudioPlaying = false;
+    updatePlayStateUI(false);
   }
 
-  function updatePlayBtnState() {
-    if (!playPauseBtn) return;
-    playPauseBtn.innerHTML = isPlaying
-      ? `<svg class="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`
-      : `<svg class="w-4 h-4 sm:w-5 sm:h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
-  }
-
-  // Update Volume Icon & States with Pure Bloom
-  function updateVolumeUI(vol, muted) {
-    const effectiveVol = muted ? 0 : vol;
-    
-    // Pure speaker SVG paths
-    const muteSvg = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/>`;
-    const lowVolSvg = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15.536 8.464a5 5 0 010 7.072M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>`;
-    const highVolSvg = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>`;
-
-    const chosenSvg = effectiveVol === 0 ? muteSvg : (effectiveVol < 0.5 ? lowVolSvg : highVolSvg);
-
-    if (playerVolSvg) playerVolSvg.innerHTML = chosenSvg;
-    if (volumeToggleBtn) {
-      volumeToggleBtn.innerHTML = `<svg class="w-5 h-5 bloom-icon text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">${chosenSvg}</svg>`;
-    }
-    if (playerVolSlider && !muted) {
-      playerVolSlider.value = Math.round(vol * 100);
+  function togglePlayPause() {
+    if (audio.paused || !isAudioPlaying) {
+      playAudio();
+    } else {
+      pauseAudio();
     }
   }
 
-  // Audio Events
+  function updatePlayStateUI(playing) {
+    if (playerCard) {
+      if (playing) {
+        playerCard.classList.add('playing');
+      } else {
+        playerCard.classList.remove('playing');
+      }
+    }
+
+    // Update play button icon
+    if (playPauseIcon) {
+      if (playing) {
+        // Pause icon
+        playPauseIcon.innerHTML = `
+          <rect x="6" y="4" width="4" height="16" fill="currentColor"></rect>
+          <rect x="14" y="4" width="4" height="16" fill="currentColor"></rect>
+        `;
+      } else {
+        // Play icon
+        playPauseIcon.innerHTML = `
+          <polygon points="5 3 19 12 5 21 5 3" fill="currentColor"></polygon>
+        `;
+      }
+    }
+
+    // Synchronize Top Floating Audio Icon
+    updateTopAudioIcon();
+  }
+
+  // Top Floating Audio Button - Pure SVG Icon (Speaker High / Speaker Muted)
+  function updateTopAudioIcon() {
+    if (!topAudioIcon) return;
+
+    if (isAudioPlaying && !audio.muted && audio.volume > 0) {
+      // Sound active (Speaker with waves)
+      topAudioIcon.innerHTML = `
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon>
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      `;
+      topAudioBtn.setAttribute('title', 'Pause Audio');
+    } else {
+      // Sound muted/paused (Speaker with X or slash)
+      topAudioIcon.innerHTML = `
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon>
+        <line x1="23" y1="9" x2="17" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+        <line x1="17" y1="9" x2="23" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+      `;
+      topAudioBtn.setAttribute('title', 'Play Audio');
+    }
+  }
+
+  // Time & Scrubber updates
   audio.addEventListener('timeupdate', () => {
-    if (!audio.duration) return;
-    const pct = (audio.currentTime / audio.duration) * 100;
-    if (progressBar) progressBar.value = pct;
-    if (timeCurrent) timeCurrent.textContent = formatTime(audio.currentTime);
+    if (audio.duration && !scrubber.matches(':active')) {
+      const current = audio.currentTime;
+      const duration = audio.duration;
+      const percent = (current / duration) * 100;
+      scrubber.value = percent;
+      if (currentTimeDisplay) currentTimeDisplay.textContent = formatTime(current);
+    }
   });
 
   audio.addEventListener('loadedmetadata', () => {
-    if (timeTotal) timeTotal.textContent = formatTime(audio.duration);
+    if (totalDurationDisplay && audio.duration) {
+      totalDurationDisplay.textContent = formatTime(audio.duration);
+    }
   });
 
   audio.addEventListener('ended', () => {
-    loadTrack(currentTrackIdx + 1);
-    playTrack();
+    // Next track on end
+    loadTrack(currentTrackIndex + 1, true);
   });
 
-  // Controls
-  if (playPauseBtn) {
-    playPauseBtn.addEventListener('click', () => {
-      if (isPlaying) pauseTrack();
-      else playTrack();
+  // Scrubber seeking
+  if (scrubber) {
+    scrubber.addEventListener('input', () => {
+      if (audio.duration) {
+        const seekTime = (scrubber.value / 100) * audio.duration;
+        if (currentTimeDisplay) currentTimeDisplay.textContent = formatTime(seekTime);
+      }
+    });
+
+    scrubber.addEventListener('change', () => {
+      if (audio.duration) {
+        audio.currentTime = (scrubber.value / 100) * audio.duration;
+      }
     });
   }
 
-  if (prevBtn) {
-    prevBtn.addEventListener('click', () => {
-      loadTrack(currentTrackIdx - 1);
-      playTrack();
-    });
-  }
+  // Volume slider
+  if (volumeSlider) {
+    volumeSlider.value = audio.volume * 100;
 
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
-      loadTrack(currentTrackIdx + 1);
-      playTrack();
-    });
-  }
-
-  if (progressBar) {
-    progressBar.addEventListener('input', () => {
-      if (!audio.duration) return;
-      audio.currentTime = (progressBar.value / 100) * audio.duration;
-    });
-  }
-
-  // Volume Slider in Player
-  if (playerVolSlider) {
-    playerVolSlider.addEventListener('input', (e) => {
+    volumeSlider.addEventListener('input', (e) => {
       const val = parseFloat(e.target.value) / 100;
-      currentVolume = val;
-      audio.volume = currentVolume;
-      isMuted = (currentVolume === 0);
-      audio.muted = isMuted;
-      updateVolumeUI(currentVolume, isMuted);
+      audio.volume = val;
+      audio.muted = false;
+      if (val > 0) lastVolume = val;
+      updateVolumeIcon();
+      updateTopAudioIcon();
     });
   }
 
-  // Volume Mute/Unmute Toggles
-  function toggleMute() {
-    isMuted = !isMuted;
-    audio.muted = isMuted;
-    if (!isMuted && audio.volume === 0) {
-      audio.volume = 0.5;
-      currentVolume = 0.5;
-    }
-    updateVolumeUI(currentVolume, isMuted);
-  }
-
-  if (playerVolBtn) playerVolBtn.addEventListener('click', toggleMute);
-  if (volumeToggleBtn) volumeToggleBtn.addEventListener('click', toggleMute);
-
-  // 2. Continuous Background Video Looper
-  function initVideoLoop() {
-    if (!video1 || !video2) return;
-
-    video1.addEventListener('ended', () => {
-      video2.currentTime = 0;
-      video2.play().then(() => {
-        video2.classList.add('active-video');
-        video1.classList.remove('active-video');
-      }).catch(e => console.log('Video 2 err:', e));
-    });
-
-    video2.addEventListener('ended', () => {
-      video1.currentTime = 0;
-      video1.play().then(() => {
-        video1.classList.add('active-video');
-        video2.classList.remove('active-video');
-      }).catch(e => console.log('Video 1 err:', e));
+  // Quick Mute / Unmute
+  if (volumeMuteBtn) {
+    volumeMuteBtn.addEventListener('click', () => {
+      if (audio.muted || audio.volume === 0) {
+        audio.muted = false;
+        audio.volume = lastVolume > 0.05 ? lastVolume : 0.8;
+        if (volumeSlider) volumeSlider.value = audio.volume * 100;
+      } else {
+        lastVolume = audio.volume;
+        audio.muted = true;
+        if (volumeSlider) volumeSlider.value = 0;
+      }
+      updateVolumeIcon();
+      updateTopAudioIcon();
     });
   }
 
-  // 3. Preloader Progress System
-  let progress = 0;
-  let assetsReady = false;
-
-  function updateLoader() {
-    if (loaderBar) loaderBar.style.width = `${progress}%`;
-    if (loaderPercent) loaderPercent.textContent = `${Math.floor(progress)}%`;
-
-    if (progress < 40) {
-      if (loaderStatus) loaderStatus.textContent = "Loading audio tracks...";
-    } else if (progress < 80) {
-      if (loaderStatus) loaderStatus.textContent = "Buffering video stream...";
-    } else if (progress < 100) {
-      if (loaderStatus) loaderStatus.textContent = "Finalizing experience...";
+  function updateVolumeIcon() {
+    if (!volumeIcon) return;
+    if (audio.muted || audio.volume === 0) {
+      volumeIcon.innerHTML = `
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon>
+        <line x1="23" y1="9" x2="17" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+        <line x1="17" y1="9" x2="23" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+      `;
+    } else if (audio.volume < 0.5) {
+      volumeIcon.innerHTML = `
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon>
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+      `;
     } else {
-      if (loaderStatus) loaderStatus.textContent = "Ready";
-      setTimeout(finishLoading, 400);
-      return;
+      volumeIcon.innerHTML = `
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon>
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+      `;
     }
-
-    // Step progress
-    const step = assetsReady ? 4 : (progress < 85 ? 1.5 : 0.4);
-    progress = Math.min(progress + step, 100);
-    requestAnimationFrame(updateLoader);
   }
 
-  function finishLoading() {
-    if (!loaderOverlay) return;
-    loaderOverlay.classList.add('hidden-loader');
-    
-    // Start Background Video
-    if (video1) {
-      video1.play().catch(e => console.log('Video autoplay err:', e));
-      video1.classList.add('active-video');
-    }
+  // Player button listeners
+  if (playPauseBtn) playPauseBtn.addEventListener('click', togglePlayPause);
+  if (prevTrackBtn) prevTrackBtn.addEventListener('click', () => loadTrack(currentTrackIndex - 1, isAudioPlaying));
+  if (nextTrackBtn) nextTrackBtn.addEventListener('click', () => loadTrack(currentTrackIndex + 1, isAudioPlaying));
+  if (topAudioBtn) topAudioBtn.addEventListener('click', togglePlayPause);
 
-    // Start Audio
-    playTrack();
+  function formatTime(seconds) {
+    if (isNaN(seconds) || seconds < 0) return '00:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }
 
-  // Preload Assets Listener
-  function monitorAssets() {
-    let loadedCount = 0;
-    const totalAssets = 3;
+  /* ==========================================================================
+     8. LIVE GLOBAL VISITOR COUNTER
+     ========================================================================== */
+  async function initVisitorCounter() {
+    if (!visitorCountDisplay) return;
 
-    function onItemLoaded() {
-      loadedCount++;
-      if (loadedCount >= totalAssets) {
-        assetsReady = true;
-      }
-    }
+    const storageKey = 'simiius_visitor_count';
+    const cachedCount = parseInt(localStorage.getItem(storageKey) || '1', 10);
+    let targetCount = cachedCount;
 
-    if (video1) {
-      if (video1.readyState >= 3) onItemLoaded();
-      else video1.addEventListener('canplay', onItemLoaded, { once: true });
-    } else onItemLoaded();
-
-    if (video2) {
-      if (video2.readyState >= 3) onItemLoaded();
-      else video2.addEventListener('canplay', onItemLoaded, { once: true });
-    } else onItemLoaded();
-
-    audio.addEventListener('canplay', onItemLoaded, { once: true });
-
-    // Fallback safety timeout (ensure loader completes in 3.5s max)
-    setTimeout(() => {
-      assetsReady = true;
-    }, 3200);
-  }
-
-  // 4. Typewriter with selection & deletion
-  const typewriterTextEl = document.getElementById('typewriter-text');
-  const phrases = [
-    "DEVELOPER ✦ EDIT",
-    "MUSIC ENTHUSIAST ✦ VIBE",
-    "DIGITAL CREATOR ✦ SIMIIUS"
-  ];
-  let phraseIdx = 0;
-
-  function typePhrase() {
-    if (!typewriterTextEl) return;
-    const currentPhrase = phrases[phraseIdx];
-    let charIdx = 0;
-    typewriterTextEl.textContent = "";
-    typewriterTextEl.classList.remove('selecting');
-
-    const typeInterval = setInterval(() => {
-      if (charIdx < currentPhrase.length) {
-        typewriterTextEl.textContent += currentPhrase.charAt(charIdx);
-        charIdx++;
-      } else {
-        clearInterval(typeInterval);
-        setTimeout(() => {
-          typewriterTextEl.classList.add('selecting');
-          setTimeout(() => {
-            typewriterTextEl.textContent = "";
-            typewriterTextEl.classList.remove('selecting');
-            phraseIdx = (phraseIdx + 1) % phrases.length;
-            setTimeout(typePhrase, 300);
-          }, 450);
-        }, 2200);
-      }
-    }, 75);
-  }
-
-  // 5. Bio Accordion
-  const bioToggleBtn = document.getElementById('bio-toggle-btn');
-  const bioContent = document.getElementById('bio-content');
-  const bioChevron = document.getElementById('bio-chevron');
-
-  if (bioToggleBtn && bioContent) {
-    bioToggleBtn.addEventListener('click', () => {
-      const isClosed = bioContent.classList.contains('hidden');
-      if (isClosed) {
-        bioContent.classList.remove('hidden');
-        if (bioChevron) bioChevron.style.transform = 'rotate(180deg)';
-      } else {
-        bioContent.classList.add('hidden');
-        if (bioChevron) bioChevron.style.transform = 'rotate(0deg)';
-      }
-    });
-  }
-
-  // 6. Real Global View Counter
-  async function initLiveCounter() {
-    const viewsEl = document.getElementById('views-counter');
-    if (!viewsEl) return;
+    // Display cached count immediately
+    visitorCountDisplay.textContent = targetCount.toLocaleString();
 
     try {
-      const res = await fetch('https://api.visitorbadge.io/api/visitors?path=simiius.github.io.official.page');
-      const svgText = await res.text();
-      const matches = svgText.match(/<text[^>]*>([^<]+)<\/text>/g);
-      if (matches && matches.length >= 2) {
-        const count = matches[matches.length - 1].replace(/<[^>]+>/g, '').trim();
-        viewsEl.textContent = count;
-        localStorage.setItem('simiius_real_views', count);
-        return;
+      // Unique badge path
+      const url = `https://api.visitorbadge.io/api/visitors?path=simiius.github.io.official.page`;
+      const res = await fetch(url, { cache: 'no-store' });
+      if (res.ok) {
+        const svgText = await res.text();
+        // Extract numbers inside <text> elements
+        const matches = [...svgText.matchAll(/<text[^>]*>([0-9,]+)<\/text>/gi)];
+        if (matches && matches.length > 0) {
+          // The last text element in visitorbadge is the numeric count
+          const rawNum = matches[matches.length - 1][1].replace(/,/g, '');
+          const parsed = parseInt(rawNum, 10);
+          if (!isNaN(parsed) && parsed > 0) {
+            targetCount = parsed;
+            localStorage.setItem(storageKey, targetCount.toString());
+          }
+        }
       }
     } catch (e) {
-      console.log('Live counter fetch error:', e);
+      // Local fallback increment
+      targetCount = cachedCount + 1;
+      localStorage.setItem(storageKey, targetCount.toString());
     }
 
-    // Fallback if offline
-    let cached = localStorage.getItem('simiius_real_views') || '1';
-    viewsEl.textContent = cached;
+    animateCount(cachedCount, targetCount);
   }
-  initLiveCounter();
 
-  // Initialization
-  initVideoLoop();
-  typePhrase();
-  loadTrack(0);
-  updateVolumeUI(currentVolume, false);
-  monitorAssets();
-  requestAnimationFrame(updateLoader);
-})();
+  function animateCount(start, end) {
+    if (start === end) {
+      visitorCountDisplay.textContent = end.toLocaleString();
+      return;
+    }
+    const duration = 1200;
+    const startTime = performance.now();
+
+    function step(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.floor(start + (end - start) * eased);
+      visitorCountDisplay.textContent = current.toLocaleString();
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        visitorCountDisplay.textContent = end.toLocaleString();
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ==========================================================================
+     9. POST-LOAD INITIALIZATION
+     ========================================================================== */
+  function initPostLoad() {
+    initVideoLooper();
+    initTypewriter();
+    initBioAccordion();
+    initVisitorCounter();
+    updateVolumeIcon();
+    updateTopAudioIcon();
+
+    // Unlock audio & background video on first global user click/touch if browser blocked autoplay
+    const unlockAudio = () => {
+      if (bgVideo1 && bgVideo1.paused && (!bgVideo2 || bgVideo2.paused)) {
+        bgVideo1.play().catch(() => {});
+      }
+      if (!isAudioPlaying && audio.paused) {
+        // Attempt starting audio gently
+        playAudio();
+      }
+      document.removeEventListener('click', unlockAudio);
+      document.removeEventListener('touchstart', unlockAudio);
+    };
+    document.addEventListener('click', unlockAudio, { once: true });
+    document.addEventListener('touchstart', unlockAudio, { once: true });
+  }
+});
