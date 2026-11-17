@@ -66,24 +66,11 @@ body {
   background: rgba(255, 255, 255, 0.3);
 }
 
-/* 1. Viewport Vignette Frame (Ambient visionOS border) */
-.viewport-frame {
-  position: fixed;
-  inset: 16px;
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.8);
-  pointer-events: none;
-  z-index: 40;
-  transition: inset 0.3s var(--apple-ease), border-radius 0.3s var(--apple-ease);
-}
+/* 1. Viewport Vignette Frame (Disabled) */
+
 
 @media (max-width: 640px) {
-  .viewport-frame {
-    inset: 4px;
-    border-radius: 16px;
-    box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.92);
-  }
+  
 }
 
 /* 2. Top-Left Floating Audio Button */
@@ -536,4 +523,110 @@ input[type="range"].custom-slider::-moz-range-thumb:hover {
     border-radius: 1.25rem;
     padding: 1rem !important;
   }
+}
+
+
+/* ==========================================================================
+   15. SPICY LYRICS (VISIONOS / SPICETIFY INSPIRED DYNAMIC KARAOKE)
+   ========================================================================== */
+.spicy-ambient-aura {
+  position: absolute;
+  inset: -30px;
+  pointer-events: none;
+  background: radial-gradient(circle at 70% 25%, rgba(217, 70, 239, 0.28), transparent 45%),
+              radial-gradient(circle at 25% 75%, rgba(59, 130, 246, 0.22), transparent 45%),
+              radial-gradient(circle at 80% 85%, rgba(244, 63, 94, 0.2), transparent 40%);
+  filter: blur(52px);
+  opacity: 0.88;
+  z-index: 1;
+  animation: spicy-aura-pulse 11s ease-in-out infinite alternate;
+}
+
+@keyframes spicy-aura-pulse {
+  0% { transform: scale(1) translate(0, 0); opacity: 0.75; }
+  50% { transform: scale(1.08) translate(-12px, 8px); opacity: 0.95; }
+  100% { transform: scale(0.96) translate(10px, -8px); opacity: 0.8; }
+}
+
+.spicy-lyrics-scroll {
+  scroll-behavior: smooth;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+}
+
+.spicy-lyrics-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.spicy-lyrics-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.spicy-lyrics-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
+}
+
+/* Individual Lyric Line */
+.spicy-line {
+  display: block;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-family: var(--font-sans);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.32;
+  letter-spacing: -0.025em;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: color 0.35s var(--apple-ease),
+              transform 0.35s var(--apple-ease),
+              filter 0.35s var(--apple-ease),
+              opacity 0.35s var(--apple-ease),
+              background-color 0.25s var(--apple-ease);
+  transform-origin: left center;
+  position: relative;
+  user-select: none;
+}
+
+@media (min-width: 640px) {
+  .spicy-line {
+    font-size: 1.55rem;
+    padding: 12px 18px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .spicy-line {
+    font-size: 1.72rem;
+    padding: 14px 20px;
+  }
+}
+
+.spicy-line:hover {
+  color: rgba(255, 255, 255, 0.75);
+  background-color: rgba(255, 255, 255, 0.04);
+  transform: translateX(4px);
+}
+
+.spicy-line.active {
+  color: #ffffff;
+  transform: scale(1.04) translateX(4px);
+  filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.75)) drop-shadow(0 0 32px rgba(236, 72, 153, 0.5));
+  opacity: 1;
+}
+
+.spicy-line.passed {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+@keyframes spin-reverse {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+.animate-spin-reverse {
+  animation: spin-reverse 2s linear infinite;
 }
