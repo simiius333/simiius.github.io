@@ -1,42 +1,26 @@
 /**
- * Lanyard API Integration (WebSocket + REST Fallback)
- * Real-time Discord presence & Spotify live stream card
+ * Lanyard API Integration (WebSocket + Active REST Polling Fallback)
+ * Real-time Discord presence, Avatar synchronization & Spotify live card
  */
 
 (function () {
   'use strict';
 
   // Configurable Discord User ID
-  // Can be overridden via window.DISCORD_USER_ID or data-discord-id attribute on <body>
   const defaultUserId = '856833249770209320';
   const DISCORD_USER_ID = window.DISCORD_USER_ID || 
-    document.body.getAttribute('data-discord-id') || 
+    (document.body && document.body.getAttribute('data-discord-id')) || 
     defaultUserId;
 
   const LANYARD_WS_URL = 'wss://api.lanyard.rest/socket';
-  const LANYARD_REST_URL = `https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`;
+  const LANYARD_REST_BASE = `https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`;
 
   let socket = null;
   let heartbeatInterval = null;
   let reconnectTimeout = null;
+  let restPollInterval = null;
   let spotifyInterval = null;
   let currentSpotifyData = null;
-
-  // DOM Elements
-  const statusRing = document.getElementById('discord-status-ring');
-  const avatarImg = document.getElementById('discord-avatar');
-  const usernameText = document.getElementById('discord-username-display');
-  const bioDiscordHandle = document.getElementById('bio-discord-handle');
-  
-  // Spotify elements
-  const spotifyCardActive = document.getElementById('spotify-card-active');
-  const spotifyCardInactive = document.getElementById('spotify-card-inactive');
-  const spotifyCover = document.getElementById('spotify-cover');
-  const spotifyTitle = document.getElementById('spotify-title');
-  const spotifyArtist = document.getElementById('spotify-artist');
-  const spotifyProgressBar = document.getElementById('spotify-progress-bar');
-  const spotifyCurrentTime = document.getElementById('spotify-current-time');
-  const spotifyTotalTime = document.getElementById('spotify-total-time');
 
   function formatTime(seconds) {
     if (isNaN(seconds) || seconds < 0) return '00:00';
@@ -45,64 +29,118 @@
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }
 
+  function getElements() {
+    return {
+      statusDot: document.getElementById('discord-status-dot') || document.getElementById('discord-status-ring'),
+      avatarImg: document.getElementById('discord-avatar'),
+      usernameText: document.getElementById('discord-username-display'),
+      bioDiscordHandle: document.getElementById('bio-discord-handle'),
+      spotifyCardActive: document.getElementById('spotify-card-active'),
+      spotifyCardInactive: document.getElementById('spotify-card-inactive'),
+      spotifyCover: document.getElementById('spotify-cover'),
+      spotifyTrack: document.getElementById('spotify-track') || document.getElementById('spotify-title'),
+      spotifyArtist: document.getElementById('spotify-artist'),
+      spotifyProgress: document.getElementById('spotify-progress') || document.getElementById('spotify-progress-bar'),
+      spotifyCurrentTime: document.getElementById('spotify-current-time'),
+      spotifyTotalTime: document.getElementById('spotify-total-time'),
+      discordActivityDesc: document.getElementById('discord-activity-desc') || document.getElementById('spotify-inactive-subtext'),
+      discordActivityDot: document.getElementById('discord-activity-dot')
+    };
+  }
+
   function updatePresenceUI(data) {
     if (!data) return;
+    const els = getElements();
 
-    // 1. Update Status Ring
+    // 1. Update Status Indicator on Avatar
     const status = data.discord_status || 'offline';
-    if (statusRing) {
-      statusRing.className = 'status-indicator';
-      statusRing.classList.add(`status-${status}`);
-      statusRing.setAttribute('title', `Status: ${status.toUpperCase()}`);
+    if (els.statusDot) {
+      els.statusDot.className = 'status-indicator';
+      els.statusDot.classList.add(`status-${status}`);
+      els.statusDot.setAttribute('title', `Discord: ${status.toUpperCase()}`);
+      els.statusDot.setAttribute('aria-label', `Discord: ${status.toUpperCase()}`);
     }
 
-    // 2. Update Avatar if available
-    if (avatarImg && data.discord_user) {
+    // 2. Update Avatar and Usernames
+    if (data.discord_user) {
       const user = data.discord_user;
-      if (user.avatar) {
+      if (els.avatarImg && user.avatar) {
         const ext = user.avatar.startsWith('a_') ? 'gif' : 'png';
-        avatarImg.src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${ext}?size=256`;
+        const targetSrc = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${ext}?size=256`;
+        if (els.avatarImg.src !== targetSrc) {
+          els.avatarImg.src = targetSrc;
+        }
+        els.avatarImg.onerror = () => {
+          els.avatarImg.src = 'assets/avatar.jpg';
+        };
       }
-      
-      avatarImg.onerror = () => {
-        avatarImg.src = 'assets/avatar.jpg';
-      };
-      
-      // Update clean handle without numerical ID
+
       const cleanUsername = user.global_name || user.username || 'SIMIIUS';
-      if (usernameText) {
-        usernameText.textContent = cleanUsername;
+      if (els.usernameText) {
+        els.usernameText.textContent = cleanUsername;
       }
-      if (bioDiscordHandle) {
-        bioDiscordHandle.textContent = `@${user.username || 'simiius'}`;
+      if (els.bioDiscordHandle) {
+        els.bioDiscordHandle.textContent = `@${user.username || 'simiius'}`;
       }
     }
 
-    // 3. Update Spotify Stream Card
-    if (data.spotify) {
+    // 3. Update Spotify Live Playing or Discord Activities
+    if (data.listening_to_spotify && data.spotify) {
       currentSpotifyData = data.spotify;
-      if (spotifyCardActive) spotifyCardActive.classList.remove('hidden');
-      if (spotifyCardInactive) spotifyCardInactive.classList.add('hidden');
+      if (els.spotifyCardActive) els.spotifyCardActive.classList.remove('hidden');
+      if (els.spotifyCardInactive) els.spotifyCardInactive.classList.add('hidden');
 
-      if (spotifyCover) spotifyCover.src = data.spotify.album_art_url || 'assets/cover1.jpg';
-      if (spotifyTitle) spotifyTitle.textContent = data.spotify.song || 'Unknown Song';
-      if (spotifyArtist) spotifyArtist.textContent = data.spotify.artist || 'Unknown Artist';
+      if (els.spotifyCover) {
+        els.spotifyCover.src = data.spotify.album_art_url || 'assets/cover1.jpg';
+      }
+      if (els.spotifyTrack) {
+        els.spotifyTrack.textContent = data.spotify.song || 'Unknown Track';
+      }
+      if (els.spotifyArtist) {
+        els.spotifyArtist.textContent = data.spotify.artist || 'Unknown Artist';
+      }
 
       startSpotifyTimer();
     } else {
       currentSpotifyData = null;
       stopSpotifyTimer();
-      if (spotifyCardActive) spotifyCardActive.classList.add('hidden');
-      if (spotifyCardInactive) {
-        spotifyCardInactive.classList.remove('hidden');
-        // Check if there is another rich presence activity (e.g. Code or Game)
-        const activity = (data.activities || []).find(a => a.type === 0);
-        const inactiveSub = document.getElementById('spotify-inactive-subtext');
-        if (inactiveSub) {
-          if (activity) {
-            inactiveSub.textContent = `Playing ${activity.name}`;
+      if (els.spotifyCardActive) els.spotifyCardActive.classList.add('hidden');
+      if (els.spotifyCardInactive) {
+        els.spotifyCardInactive.classList.remove('hidden');
+        
+        // Find custom or game activity
+        const activities = data.activities || [];
+        const game = activities.find(a => a.type === 0);
+        const streaming = activities.find(a => a.type === 1);
+        const custom = activities.find(a => a.type === 4);
+
+        if (els.discordActivityDesc) {
+          if (streaming) {
+            els.discordActivityDesc.textContent = `Streaming ${streaming.name}`;
+          } else if (game) {
+            els.discordActivityDesc.textContent = `Playing ${game.name}`;
+          } else if (custom && custom.state) {
+            els.discordActivityDesc.textContent = custom.state;
+          } else if (status === 'online') {
+            els.discordActivityDesc.textContent = 'Active on Discord';
+          } else if (status === 'idle') {
+            els.discordActivityDesc.textContent = 'Away on Discord';
+          } else if (status === 'dnd') {
+            els.discordActivityDesc.textContent = 'Do Not Disturb';
           } else {
-            inactiveSub.textContent = 'No activity / Offline';
+            els.discordActivityDesc.textContent = 'No activity / Offline';
+          }
+        }
+
+        if (els.discordActivityDot) {
+          if (status === 'online') {
+            els.discordActivityDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]';
+          } else if (status === 'idle') {
+            els.discordActivityDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]';
+          } else if (status === 'dnd') {
+            els.discordActivityDot.className = 'w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.8)]';
+          } else {
+            els.discordActivityDot.className = 'w-2.5 h-2.5 rounded-full bg-slate-600';
           }
         }
       }
@@ -124,46 +162,40 @@
 
   function updateSpotifyProgress() {
     if (!currentSpotifyData || !currentSpotifyData.timestamps) return;
+    const els = getElements();
     const { start, end } = currentSpotifyData.timestamps;
     const now = Date.now();
-    const total = (end - start) / 1000;
+    const total = Math.max(1, (end - start) / 1000);
     const current = Math.min(total, Math.max(0, (now - start) / 1000));
     const percent = Math.min(100, Math.max(0, (current / total) * 100));
 
-    if (spotifyProgressBar) {
-      spotifyProgressBar.style.width = `${percent}%`;
+    if (els.spotifyProgress) {
+      els.spotifyProgress.style.width = `${percent.toFixed(1)}%`;
     }
-    if (spotifyCurrentTime) {
-      spotifyCurrentTime.textContent = formatTime(current);
+    if (els.spotifyCurrentTime) {
+      els.spotifyCurrentTime.textContent = formatTime(current);
     }
-    if (spotifyTotalTime) {
-      spotifyTotalTime.textContent = formatTime(total);
+    if (els.spotifyTotalTime) {
+      els.spotifyTotalTime.textContent = formatTime(total);
     }
   }
 
-  // REST API Fallback
+  // Active REST API Fetcher
   async function fetchRestPresence() {
     try {
-      const res = await fetch(LANYARD_REST_URL);
+      const timestamp = Date.now();
+      const res = await fetch(`${LANYARD_REST_BASE}?_=${timestamp}`, { cache: 'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
       if (json.success && json.data) {
         updatePresenceUI(json.data);
       }
     } catch (err) {
-      // Graceful fallback to offline defaults
-      updatePresenceUI({
-        discord_status: 'offline',
-        discord_user: {
-          username: 'simiius',
-          global_name: 'SIMIIUS'
-        },
-        spotify: null
-      });
+      console.warn('Lanyard REST poll notice:', err.message);
     }
   }
 
-  // Lanyard WebSocket Client
+  // Lanyard WebSocket Connection
   function connectWebSocket() {
     if (socket && (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING)) {
       return;
@@ -208,29 +240,37 @@
               break;
           }
         } catch (e) {
-          console.warn('Lanyard message parse error:', e);
+          console.warn('Lanyard parse error:', e);
         }
       };
 
-      socket.onerror = (err) => {
-        console.warn('Lanyard socket error, falling back to REST:', err);
-        fetchRestPresence();
+      socket.onerror = () => {
+        // Fallback handled by periodic REST poll
       };
 
       socket.onclose = () => {
         if (heartbeatInterval) clearInterval(heartbeatInterval);
-        // Attempt reconnect after 5s
         reconnectTimeout = setTimeout(connectWebSocket, 5000);
       };
     } catch (e) {
-      fetchRestPresence();
+      // Socket creation failed; REST polling continues
     }
   }
 
-  // Initialize
-  window.addEventListener('DOMContentLoaded', () => {
-    connectWebSocket();
-    // Also initial REST fetch for instant display
+  function init() {
+    // 1. Immediate REST presence fetch
     fetchRestPresence();
-  });
+    // 2. Establish live WebSocket
+    connectWebSocket();
+    // 3. Fallback recurring REST poll every 6s for continuous live sync
+    if (!restPollInterval) {
+      restPollInterval = setInterval(fetchRestPresence, 6000);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
