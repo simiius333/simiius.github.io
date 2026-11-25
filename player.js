@@ -28,171 +28,171 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const tekItLyrics = [
   {
-    "time": 0.1,
+    "time": 0.0,
     "text": "Where did you learn what it means to reciprocate?"
   },
   {
-    "time": 6.29,
+    "time": 5.75,
     "text": "And how much can I be expected to tolerate? Uh"
   },
   {
-    "time": 12.41,
+    "time": 11.6,
     "text": "So I started to think 'bout the plans I made"
   },
   {
-    "time": 15.52,
+    "time": 14.95,
     "text": "The debt unpaid"
   },
   {
-    "time": 19.08,
+    "time": 18.5,
     "text": "And you just can't call a spade a spade"
   },
   {
-    "time": 24.23,
+    "time": 23.6,
     "text": "♪"
   },
   {
-    "time": 25.73,
+    "time": 25.1,
     "text": "I watch the moon"
   },
   {
-    "time": 30.61,
+    "time": 29.95,
     "text": "Let it run my mood"
   },
   {
-    "time": 33.78,
+    "time": 33.15,
     "text": "Can't stop thinking of you"
   },
   {
-    "time": 39.11,
+    "time": 38.45,
     "text": "I watch you (Now I let it go)"
   },
   {
-    "time": 43.3,
+    "time": 42.65,
     "text": "(And I watch as things play out like)"
   },
   {
-    "time": 47.38,
+    "time": 46.75,
     "text": "So long, nice to know you, I'll be moving on"
   },
   {
-    "time": 54.0,
+    "time": 53.4,
     "text": "♪"
   },
   {
-    "time": 54.6,
+    "time": 53.95,
     "text": "We started off in such a nice place"
   },
   {
-    "time": 58.82,
+    "time": 58.15,
     "text": "We were talking the same language"
   },
   {
-    "time": 62.9,
+    "time": 62.25,
     "text": "I o-open and I'm closing"
   },
   {
-    "time": 67.13,
+    "time": 66.45,
     "text": "You can't stand the thought"
   },
   {
-    "time": 69.91,
+    "time": 69.25,
     "text": "Of a real beating heart"
   },
   {
-    "time": 71.96,
+    "time": 71.35,
     "text": "You'd be holding, having trouble"
   },
   {
-    "time": 76.14,
+    "time": 75.45,
     "text": "O-o-owning and admit that I am hoping"
   },
   {
-    "time": 83.7,
+    "time": 82.9,
     "text": "♪"
   },
   {
-    "time": 84.5,
+    "time": 83.75,
     "text": "I watch the moon"
   },
   {
-    "time": 89.17,
+    "time": 88.45,
     "text": "Let it run my mood"
   },
   {
-    "time": 92.41,
+    "time": 91.75,
     "text": "Can't stop thinking of you"
   },
   {
-    "time": 97.66,
+    "time": 96.95,
     "text": "I watch you (Now I let it go)"
   },
   {
-    "time": 101.87,
+    "time": 101.15,
     "text": "(And I watch as things play out like)"
   },
   {
-    "time": 105.92,
+    "time": 105.25,
     "text": "So long, nice to know you, I'll be moving on"
   },
   {
-    "time": 112.5,
+    "time": 111.85,
     "text": "Moving on"
   },
   {
-    "time": 118.0,
+    "time": 117.2,
     "text": "♪ Guitar Solo ♪"
   },
   {
-    "time": 142.25,
+    "time": 141.45,
     "text": "You"
   },
   {
-    "time": 144.41,
+    "time": 143.65,
     "text": "Yeah, I always know the truth"
   },
   {
-    "time": 148.51,
+    "time": 147.75,
     "text": "But I can't just say it to you"
   },
   {
-    "time": 153.06,
+    "time": 152.25,
     "text": "Yeah, I know the truth"
   },
   {
-    "time": 158.72,
+    "time": 157.85,
     "text": "I knew"
   },
   {
-    "time": 160.87,
+    "time": 160.05,
     "text": "Yeah, I always know the truth"
   },
   {
-    "time": 164.86,
+    "time": 164.05,
     "text": "But I can't just say it to you"
   },
   {
-    "time": 169.46,
+    "time": 168.65,
     "text": "Yeah, I know the truth"
   },
   {
-    "time": 175.7,
+    "time": 174.85,
     "text": "I never thought we'd see it through"
   },
   {
-    "time": 178.7,
+    "time": 177.85,
     "text": "I never could rely on you"
   },
   {
-    "time": 181.8,
+    "time": 180.95,
     "text": "And few times your face came into view"
   },
   {
-    "time": 185.1,
+    "time": 184.25,
     "text": "Into view, I'm not into you"
   },
   {
-    "time": 188.0,
+    "time": 187.15,
     "text": "Into you..."
   }
 ];
@@ -203,143 +203,143 @@ document.addEventListener('DOMContentLoaded', () => {
     "text": "♪ Instrumental Intro ♪"
   },
   {
-    "time": 11.98,
+    "time": 11.45,
     "text": "Say I'm cold-hearted"
   },
   {
-    "time": 14.92,
+    "time": 14.35,
     "text": "But I'm just gettin' started"
   },
   {
-    "time": 17.92,
+    "time": 17.35,
     "text": "Got my eyes on the target"
   },
   {
-    "time": 20.94,
+    "time": 20.35,
     "text": "Now, now"
   },
   {
-    "time": 23.77,
+    "time": 23.15,
     "text": "Oooh, oooh, oooh"
   },
   {
-    "time": 26.54,
+    "time": 25.95,
     "text": "'Til the battle's won"
   },
   {
-    "time": 29.56,
+    "time": 28.95,
     "text": "'Til kingdom come"
   },
   {
-    "time": 32.4,
+    "time": 31.85,
     "text": "Oooh, oooh, oooh"
   },
   {
-    "time": 35.48,
+    "time": 34.85,
     "text": "I'll never run"
   },
   {
-    "time": 37.49,
+    "time": 36.85,
     "text": "Best to give me your loyalty"
   },
   {
-    "time": 41.34,
+    "time": 40.75,
     "text": "'Cause I'm takin' the world, you'll see"
   },
   {
-    "time": 44.2,
+    "time": 43.65,
     "text": "They'll be callin' me, callin' me"
   },
   {
-    "time": 47.45,
+    "time": 46.85,
     "text": "They'll be callin' me royalty"
   },
   {
-    "time": 49.88,
+    "time": 49.25,
     "text": "Best to give me your loyalty"
   },
   {
-    "time": 53.11,
+    "time": 52.55,
     "text": "'Cause I'm takin' the world, you'll see"
   },
   {
-    "time": 55.97,
+    "time": 55.35,
     "text": "They'll be callin' me, callin' me"
   },
   {
-    "time": 59.21,
+    "time": 58.65,
     "text": "They'll be callin' me royalty"
   },
   {
-    "time": 62.82,
+    "time": 62.15,
     "text": "♪ Drop ♪ They'll be callin' me royalty"
   },
   {
-    "time": 72.0,
+    "time": 71.3,
     "text": "♪"
   },
   {
-    "time": 73.79,
+    "time": 73.15,
     "text": "They say I'm dangerous, 'cause I"
   },
   {
-    "time": 76.89,
+    "time": 76.25,
     "text": "Broke all the cages"
   },
   {
-    "time": 79.78,
+    "time": 79.15,
     "text": "No I, won't sit and take it"
   },
   {
-    "time": 83.01,
+    "time": 82.45,
     "text": "Now, now"
   },
   {
-    "time": 85.7,
+    "time": 85.05,
     "text": "They left me for dead, I guess they'll never learn"
   },
   {
-    "time": 91.57,
+    "time": 90.95,
     "text": "Every time I break there's just more pain to burn"
   },
   {
-    "time": 96.19,
+    "time": 95.55,
     "text": "They'll never, never, never learn"
   },
   {
-    "time": 99.56,
+    "time": 98.85,
     "text": "Oooh, oooh, oooh"
   },
   {
-    "time": 102.5,
+    "time": 101.85,
     "text": "'Til the battle's won"
   },
   {
-    "time": 105.47,
+    "time": 104.85,
     "text": "'Til kingdom come"
   },
   {
-    "time": 108.33,
+    "time": 107.75,
     "text": "Oooh, oooh, oooh"
   },
   {
-    "time": 111.35,
+    "time": 110.75,
     "text": "I'll never run"
   },
   {
-    "time": 113.48,
+    "time": 112.85,
     "text": "Best to give me your loyalty"
   },
   {
-    "time": 117.3,
+    "time": 116.65,
     "text": "'Cause I'm takin' the world, you'll see"
   },
   {
-    "time": 120.12,
+    "time": 119.55,
     "text": "They'll be callin' me, callin' me"
   },
   {
-    "time": 123.44,
+    "time": 122.75,
     "text": "They'll be callin' me royalty"
   }
 ];
@@ -694,6 +694,7 @@ document.addEventListener('DOMContentLoaded', () => {
     audio.play().then(() => {
       isAudioPlaying = true;
       updatePlayStateUI(true);
+      startLyricsSyncLoop();
     }).catch(err => {
       console.log('Audio playback waiting for user click:', err);
       isAudioPlaying = false;
@@ -705,6 +706,7 @@ document.addEventListener('DOMContentLoaded', () => {
     audio.pause();
     isAudioPlaying = false;
     updatePlayStateUI(false);
+    stopLyricsSyncLoop();
   }
 
   function togglePlayPause() {
@@ -866,14 +868,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  let lyricsSyncRaf = null;
+  const LYRIC_LEAD_AHEAD = 0.18; // 180ms lead anticipation for razor-sharp vocal onset
+
   function syncLyricsWithTime(currentTime) {
     if (!lyricsContainer) return;
     const lines = lyricsData[currentTrackIndex] || [];
     if (lines.length === 0) return;
 
+    // Use current time plus small vocal anticipation lead
+    const effectiveTime = currentTime + LYRIC_LEAD_AHEAD;
+
     let activeIdx = -1;
     for (let i = 0; i < lines.length; i++) {
-      if (currentTime >= lines[i].time) {
+      if (effectiveTime >= lines[i].time) {
         activeIdx = i;
       } else {
         break;
@@ -882,6 +890,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (activeIdx !== -1 && activeIdx !== currentLineIndex) {
       setActiveLine(activeIdx, true);
+    }
+  }
+
+  // 60fps/120fps Real-Time Synced Animation Loop (Eliminates timeupdate latency!)
+  function startLyricsSyncLoop() {
+    if (lyricsSyncRaf) cancelAnimationFrame(lyricsSyncRaf);
+    function tick() {
+      if (isAudioPlaying && !audio.paused) {
+        syncLyricsWithTime(audio.currentTime);
+        lyricsSyncRaf = requestAnimationFrame(tick);
+      } else {
+        lyricsSyncRaf = null;
+      }
+    }
+    lyricsSyncRaf = requestAnimationFrame(tick);
+  }
+
+  function stopLyricsSyncLoop() {
+    if (lyricsSyncRaf) {
+      cancelAnimationFrame(lyricsSyncRaf);
+      lyricsSyncRaf = null;
     }
   }
 
